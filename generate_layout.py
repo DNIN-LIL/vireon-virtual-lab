@@ -5,7 +5,7 @@ root = Path(__file__).resolve().parent
 docs_dir = root / "docs" / "layout_parts"
 docs_dir.mkdir(parents=True, exist_ok=True)
 
-index_file = root / "CODE_LAYOUT.md"
+index_file = root / "docs" / "CODE_LAYOUT.md"
 
 sections = {
     "overview": docs_dir / "code_layout_overview.md",

@@ -5,6 +5,7 @@ from core.waveform_generator import sine, square, triangle, modulated
 from core.visualizer import save_plot
 from core.logger import save_csv
 
+# Updated waveform mapping including corrected modulated function
 WAVEFORMS = {
     "sine": sine,
     "square": square,
@@ -37,7 +38,8 @@ def run_single(cfg, waveform_key):
 
     EPSILON_0 = 8.854e-12
     t = np.linspace(0, 1, 1000)
-    signal = np.abs(WAVEFORMS[waveform_key](f, t))
+    waveform_func = WAVEFORMS[waveform_key]
+    signal = np.abs(waveform_func(f, t))
     avg_signal = np.mean(signal)
 
     results = []
@@ -48,7 +50,12 @@ def run_single(cfg, waveform_key):
         results.append((scale, F))
 
     save_csv(results, ["Epsilon Scale", "Force (N)"], f"{out_dir}/permittivity_force_response.csv")
-    save_plot([r[0] for r in results], [r[1] for r in results],
-              "Force vs. Vacuum Permittivity", "ε₀ Multiplier", "Force (N)",
-              f"{out_dir}/permittivity_force_plot.png")
+    save_plot(
+        [r[0] for r in results],
+        [r[1] for r in results],
+        "Force vs. Vacuum Permittivity",
+        "ε₀ Multiplier",
+        "Force (N)",
+        f"{out_dir}/permittivity_force_plot.png"
+    )
     print(f"✅ Output saved to {out_dir}")
