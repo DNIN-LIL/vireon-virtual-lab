@@ -1,0 +1,13 @@
+particles: 500
+radius: 1.0
+frequency: 5e5
+charge: 1e-9
+mass: 1e-6
+default_k: 1.0
+steps: 1000
+dt: 1e-5
+waveform: all
+sample_rate: 1000 
+theta: 0          
+
+output_dir: "output/plasma_resonance_collapse"

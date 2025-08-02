@@ -1,0 +1,5 @@
+charges: 1e-6
+frequencies: 1e6
+masses: [0.1, 0.5, 1.0, 5.0, 10.0]
+default_k: 1.0
+output_dir: "output/mass_scaling"

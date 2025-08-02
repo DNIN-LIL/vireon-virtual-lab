@@ -1,0 +1,7 @@
+charges: 1e-6
+frequency: 1e6
+mass: 1.0
+epsilon_multipliers: [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+default_k: 1.0
+waveform: all
+output_dir: "output/vacuum_permittivity_modulation"

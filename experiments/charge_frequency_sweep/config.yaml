@@ -1,0 +1,8 @@
+# Charge–Frequency Sweep Configuration
+
+charges: [1e-6, 5e-6, 1e-5, 5e-5, 1e-4]     # Charge values in Coulombs
+frequencies: [1e4, 1e5, 5e5, 1e6]           # Frequencies in Hz
+mass: 1.0                                   # Test mass in kg
+default_k: 1.0                              # Proportionality constant k
+output_dir: "output/charge_frequency_sweep"
+waveform: all

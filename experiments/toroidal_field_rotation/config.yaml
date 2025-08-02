@@ -1,0 +1,11 @@
+radius: 0.2
+num_charges: 100
+omega_rot: 1000
+frequency: 1e6
+charge: 1e-6
+mass: 1.0
+default_k: 1.0
+steps: 1000
+dt: 1e-4
+waveform: all
+output_dir: "output/toroidal_field_rotation"
