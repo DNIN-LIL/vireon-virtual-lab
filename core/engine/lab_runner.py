@@ -1,28 +1,37 @@
-import importlib.util
-import sys
+import importlib
 from pathlib import Path
+from typing import Optional, Tuple, Dict, Any
+from core.config_loader import load_config
+from core.medium import Medium
 
-def run_lab(exp_name):
-    exp_path = Path("experiments") / exp_name / "logic.py"
+def _module_path_for(exp_name: str) -> str:
+    # "magnetic_oscillation/vacuum_sine" -> "experiments.magnetic_oscillation.vacuum_sine.logic"
+    return "experiments." + exp_name.replace("/", ".").replace("\\", ".") + ".logic"
 
-    if not exp_path.exists():
-        print(f"❌ Experiment not found: {exp_path}")
-        sys.exit(1)
+def _config_path_for(exp_name: str) -> Path:
+    return Path("experiments") / exp_name / "config.yaml"
 
-    spec = importlib.util.spec_from_file_location("logic", str(exp_path))
-    module = importlib.util.module_from_spec(spec)
+def _load_cfg_and_medium(exp_name: str) -> Tuple[Dict[str, Any], Medium]:
+    cfg_path = _config_path_for(exp_name)
+    cfg = load_config(str(cfg_path)) if cfg_path.exists() else {}
+    # Allow either nested `medium: {...}` or top-level flat keys:
+    medium_cfg = {"medium": cfg.get("medium", cfg)}
+    medium = Medium(medium_cfg)
+    return cfg, medium
+
+def run_experiment(exp_name: str):
+    """
+    Load experiments/<exp_name>/logic.py and call run(cfg, medium).
+    """
+    mod_path = _module_path_for(exp_name)
+    module = importlib.import_module(mod_path)
+    if not hasattr(module, "run"):
+        raise RuntimeError(f"No run() in {mod_path}")
+
+    cfg, medium = _load_cfg_and_medium(exp_name)
+
+    # Prefer headless signature run(cfg, medium); if a legacy no-arg exists, call it.
     try:
-        spec.loader.exec_module(module)
-    except Exception as e:
-        print(f"❌ Failed to execute {exp_path}:\n{e}")
-        sys.exit(1)
-
-    if hasattr(module, "run"):
-        try:
-            module.run()
-        except Exception as e:
-            print(f"❌ Error during simulation:\n{e}")
-            sys.exit(1)
-    else:
-        print(f"❌ No run() function in {exp_path}")
-        sys.exit(1)
+        return module.run(cfg, medium)
+    except TypeError:
+        return module.run()

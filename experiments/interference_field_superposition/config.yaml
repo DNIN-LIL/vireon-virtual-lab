@@ -1,0 +1,27 @@
+medium:
+  type: vacuum
+  dt: 1.0e-4
+
+charge_present: true
+magnetic_field: false
+oscillation_type: electric_oscillation
+waveform: sine
+
+charges: [0.001, 0.001, 0.001]
+frequencies: [1000000, 1000000, 1000000]
+phase_offsets: [0, 120, 240]
+
+mass: 1.0
+default_k: 1.0
+duration_s: 1.0
+spin_direction: clockwise
+
+grid_size: [1.0, 1.0, 1.0]
+grid_points: 50
+sampling_rate: 10000
+
+output_dir: "output/interference_field_superposition"
+output_fields:
+  - force_vector
+  - potential_map
+  - gravimeter_signal

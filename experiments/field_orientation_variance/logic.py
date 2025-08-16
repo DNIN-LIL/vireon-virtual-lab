@@ -1,69 +1,86 @@
-import numpy as np
 import os
-from core.config_loader import load_config
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+from core.medium import Medium
 from core.waveform_generator import sine
 from core.physics import compute_force
 from core.visualizer import save_plot
 
-def get_input(prompt, default, cast_func):
-    val = input(f"{prompt} [default: {default}]: ")
-    if not val.strip():
-        return cast_func(default)
-    try:
-        parsed = eval(val, {"__builtins__": {}})
-        return cast_func(parsed)
-    except Exception:
-        print("⚠️ Invalid input. Using default.")
-        return cast_func(default)
+def _ensure_dir(path: str):
+    os.makedirs(path, exist_ok=True)
 
-def run():
-    print("\n🔬 Running Field Orientation Variance Simulation")
-    cfg = load_config("experiments/field_orientation_variance/config.yaml")
+def _grid_points(N: int):
+    g = np.linspace(-0.5, 0.5, N)
+    return np.array([(x, y, z) for x in g for y in g for z in g], dtype=float)
 
-    N       = int(get_input("Enter grid size (NxNxN)", cfg.get("grid_size"), int))
-    f       = float(get_input("Enter frequency (Hz)", cfg.get("frequency"), float))
-    Q       = float(get_input("Enter charge per particle (C)", cfg.get("charge"), float))
-    M       = float(get_input("Enter test mass (kg)", cfg.get("mass"), float))
-    mode    = str(get_input("Enter phase mode (coherent, random, linear)", cfg.get("mode"), str)).lower()
-    k       = float(get_input("Enter proportionality constant k", cfg.get("default_k"), float))
+def _make_phases(mode: str, count: int):
+    m = (mode or "coherent").lower()
+    if m == "coherent":
+        return np.zeros(count, dtype=float)
+    if m == "random":
+        return np.random.uniform(0.0, 2.0 * math.pi, size=count)
+    if m == "linear":
+        return np.linspace(0.0, 2.0 * math.pi, num=count, endpoint=False)
+    return np.zeros(count, dtype=float)
+
+def _dt_from_cfg(cfg: dict, medium: Medium):
+    sr = float(cfg.get("sampling_rate", 0)) or 0.0
+    return (1.0 / sr) if sr > 0.0 else float(medium.dt)
+
+def run(cfg: dict, medium: Medium):
+    # Parameters (mirrors config keys exactly)
+    N = int(cfg.get("grid_size", 4))
+    f_hz = float(cfg.get("frequency", 1.0e6))
+    Q = float(cfg.get("charge", 1.0e-9))
+    M = float(cfg.get("mass", 1.0e-6))
+    mode = str(cfg.get("mode", "random"))
+    k = float(cfg.get("default_k", 1.0))
     out_dir = cfg.get("output_dir", "output/field_orientation_variance")
-    os.makedirs(out_dir, exist_ok=True)
+    _ensure_dir(out_dir)
 
-    print(f"\n📋 Type Check:")
-    print(f"  Q: {Q} ({type(Q)})")
-    print(f"  f: {f} ({type(f)})")
-    print(f"  M: {M} ({type(M)})")
-    print(f"  k: {k} ({type(k)})")
+    # Timebase
+    duration_s = float(cfg.get("duration_s", 1.0))
+    dt = _dt_from_cfg(cfg, medium)
+    steps = max(1, int(duration_s / dt))
+    t_arr = np.arange(steps, dtype=float) * dt
 
-    grid = np.linspace(-0.5, 0.5, N)
-    sources = np.array([(x, y, z) for x in grid for y in grid for z in grid])
-    test_point = np.array([0.0, 0.0, 0.0])
-    steps = 1000
-    dt = 1e-4
-    t_arr = np.arange(steps) * dt
-    force_trace = []
+    # Source arrangement and phases
+    sources = _grid_points(N)
+    phases = _make_phases(mode, len(sources))
+    test_point = np.array([0.0, 0.0, 0.0], dtype=float)
 
-    if mode == "coherent":
-        phases = np.zeros(len(sources))
-    elif mode == "random":
-        phases = np.random.uniform(0, 2 * np.pi, len(sources))
-    elif mode == "linear":
-        phases = np.linspace(0, 2 * np.pi, len(sources))
-    else:
-        print("❌ Invalid mode. Defaulting to 'coherent'.")
-        phases = np.zeros(len(sources))
+    # Force trace over time
+    force_trace = np.zeros(steps, dtype=float)
 
     for idx, t in enumerate(t_arr):
-        F_total = np.zeros(3)
+        F_total = np.zeros(3, dtype=float)
+        # sum contributions from all sources
         for i, src in enumerate(sources):
             r_vec = test_point - src
-            shifted_t = t + phases[i] / (2 * np.pi * f)
-            omega = 2 * np.pi * f
-            F = compute_force(k, Q, f, M, r_vec, shifted_t, omega, sine)
-
+            # phase shift as a time offset
+            t_shift = t + phases[i] / (2.0 * math.pi * f_hz)
+            F = compute_force(
+                k=k,
+                Q=Q,
+                f_hz=f_hz,
+                M=M,
+                r_vec=r_vec,
+                t=t_shift,
+                waveform_func=sine,
+                theta_deg=0.0,
+                medium_scale=1.0  # vacuum: no screening
+            )
             F_total += F
-        force_trace.append(np.linalg.norm(F_total))
+        force_trace[idx] = float(np.linalg.norm(F_total))
 
-    np.savetxt(f"{out_dir}/field_variance_force_trace.csv", force_trace, delimiter=",", fmt="%.4e")
-    save_plot(t_arr, force_trace, "Force vs. Time", "Time (s)", "|F| (N)", f"{out_dir}/field_variance_plot.png")
-    print(f"✅ Output saved to {out_dir}")
+    # Save artifacts
+    np.savetxt(os.path.join(out_dir, "field_variance_force_trace.csv"),
+               force_trace, delimiter=",", fmt="%.6e")
+    save_plot(
+        t_arr, force_trace,
+        title="Force vs. Time",
+        xlabel="Time (s)",
+        ylabel="|F| (N)",
+        filepath=os.path.join(out_dir, "field_variance_plot.png")
+    )

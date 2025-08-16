@@ -1,11 +1,18 @@
-radius: 0.2
-num_charges: 100
-omega_rot: 1000
-frequency: 1e6
-charge: 1e-6
-mass: 1.0
+medium:
+  type: vacuum
+  dt: 1.0e-4
+
+radius: 0.2             # ring radius (meters)
+num_charges: 100        # sources on the ring
+omega_rot: 1000.0       # ring angular speed (rad/s)
+
+frequency_hz: 1.0e6     # drive frequency for the field model (Hz)
+charge: 1.0e-6          # charge per source (C)
+mass: 1.0               # test mass (kg)
 default_k: 1.0
-steps: 1000
-dt: 1e-4
-waveform: all
+
+waveform: all           # sine | square | triangle | all
+duration_s: 1.0
+sampling_rate: 10000
+
 output_dir: "output/toroidal_field_rotation"

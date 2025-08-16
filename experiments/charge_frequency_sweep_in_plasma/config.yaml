@@ -1,0 +1,27 @@
+medium:
+  type: plasma
+  plasma_frequency: 1.2e6
+  collision_freq: 3.0e4
+  relative_permittivity: 2.5
+  drive_frequency: null
+  electric_screening_mode: auto
+  magnetic_drag_coeff: 0.0
+charge_present: true
+magnetic_field: false
+oscillation_type: electric_oscillation
+waveform: all
+charges: [1e-6, 5e-6, 1e-5, 5e-5, 1e-4]
+frequencies: [1e4, 1e5, 5e5, 1e6]
+mass: 1.0
+default_k: 1.0
+duration_s: 1.0
+spin_direction: clockwise
+grid_size: [1.0, 1.0, 1.0]
+grid_points: 50
+sampling_rate: 10000
+output_dir: "output/charge_frequency_sweep_in_plasma"
+output_fields:
+  - force_vector
+  - potential_map
+  - gravimeter_signal
+  - plasma_vorticity

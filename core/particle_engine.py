@@ -1,9 +1,17 @@
+# core/particle_engine.py
 import numpy as np
 import matplotlib.pyplot as plt
+from core.medium import Medium
 
-def update_particles(positions, velocities, accelerations, dt):
-    velocities += accelerations * dt
-    positions += velocities * dt
+def update_particles(positions, velocities, accelerations, dt, medium: Medium = None):
+    if medium is not None:
+        nu = float(medium.velocity_drag())
+        if nu > 0.0:
+            # a_total = a_forces - nu * v  (linear drag)
+            accelerations = accelerations - nu * velocities
+
+    velocities = velocities + accelerations * dt
+    positions = positions + velocities * dt
     return positions, velocities
 
 def demo_run_simulation():
