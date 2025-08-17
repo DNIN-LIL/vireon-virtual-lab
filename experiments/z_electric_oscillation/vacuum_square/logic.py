@@ -1,1 +1,1 @@
-from ..shared_logic import run_oscillation as run
+from experiments.z_electric_oscillation.shared_logic import run_electric as run

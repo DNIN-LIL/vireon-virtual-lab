@@ -1,1 +1,1 @@
-from experiments.z_magnetic_oscillation.shared_logic import run_oscillation as run
+from experiments.z_magnetic_oscillation.shared_logic import run_magnetic as run
