@@ -6,7 +6,7 @@ Set-Location "$PSScriptRoot\.."
 
 $paths = @(
   'core',
-  'experiments',           # all experiments
+  'experiments',           # <- packs ALL experiments
   'main.py',
   'config.default.yaml',
   'requirements.txt'
