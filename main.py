@@ -234,7 +234,9 @@ def main():
     parser.add_argument("--medium", help="medium yaml name or path (e.g., plasma.yaml)")
     parser.add_argument("--set", nargs="*", help="override parameters as key=value", dest="overrides")
     parser.add_argument("--no-prompt", action="store_true", help="run without interactive prompts")
-
+    parser.add_argument('--config', default='config.default.yaml',
+                    help='Path to YAML config file')
+    
     args = parser.parse_args()
     experiments = find_experiments()
     if not experiments:
