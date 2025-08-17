@@ -1,0 +1,74 @@
+# cspell:ignore compileall pwsh
+name: Build Vireon Lab
+
+# (recommended so the release step can publish)
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'   # e.g., v0.1.0
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Byte-compile source
+        run: python -m compileall -q core experiments main.py
+
+      - name: Pack lab zip
+        shell: pwsh
+        run: .\scripts\pack-lab.ps1
+
+      - name: Upload artifact (CI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: vireon-lab
+          path: |
+            dist/vireon-lab.zip
+            dist/vireon-lab.zip.sha256
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: vireon-lab
+        # downloads to ./vireon-lab by default; keep paths consistent:
+      - name: Move artifact into dist
+        run: |
+          mkdir -p dist
+          mv -f vireon-lab/vireon-lab.zip dist/
+          mv -f vireon-lab/vireon-lab.zip.sha256 dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/vireon-lab.zip
+            dist/vireon-lab.zip.sha256
