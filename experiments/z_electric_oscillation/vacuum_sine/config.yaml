@@ -1,0 +1,13 @@
+medium: vacuum
+
+charge: 1.0e-6
+waveform: sine
+frequency_hz: 1.0e6
+mass: 1.0
+default_k: 1.0
+
+# Heavier profile
+sampling_rate: 2.0e7
+duration_s: 0.01
+
+output_dir: "output/z_electric_oscillation/vacuum_sine"

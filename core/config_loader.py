@@ -1,7 +1,7 @@
-# core/config_loader.py
+from typing import Tuple
 import yaml
 from pathlib import Path
-
+from core.medium import Medium
 def load_config(path):
     with open(path, 'r') as f:
         return yaml.safe_load(f)
@@ -19,3 +19,4 @@ def merge_configs(default_path, local_path=None):
         local = load_config(local_path)
         _deep_update(cfg, local)
     return cfg
+

@@ -1,108 +1,255 @@
 import os
 import math
+from pathlib import Path
+
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
 from core.medium import Medium
-from core.physics import compute_force
-from core.waveform_generator import sine, square, triangle, modulated
-from core.visualizer import save_plot
+from core.config_loader import load_config
 
-def _ensure_dir(p: str):
-    os.makedirs(p, exist_ok=True)
 
-def _timebase(cfg: dict, medium: Medium):
-    if "steps" in cfg and "dt" in cfg:
-        steps = int(cfg["steps"])
-        dt = float(cfg["dt"])
-        return steps, dt
-    sr = float(cfg.get("sampling_rate", 0)) or 0.0
+def _ensure_dir(path: str) -> None:
+    os.makedirs(path, exist_ok=True)
+
+
+def _as_float(v, default: float) -> float:
+    if v is None:
+        return float(default)
+    return float(v)
+
+
+def _as_int(v, default: int) -> int:
+    if v is None:
+        return int(default)
+    return int(v)
+
+
+def _dt_from_sampling(cfg: dict, medium: Medium) -> float:
+    sr = float(cfg.get("sampling_rate", 0.0))
     if sr > 0.0:
-        dt = 1.0 / sr
-        steps = max(1, int(float(cfg.get("duration_s", 1.0)) / dt))
-        return steps, dt
-    dt = float(medium.dt)
-    steps = max(1, int(float(cfg.get("duration_s", 1.0)) / dt))
-    return steps, dt
+        return 1.0 / sr
+    dt_raw = getattr(medium, "dt", None)
+    if dt_raw is None:
+        raise ValueError("medium.dt is missing; set sampling_rate or define medium.dt")
+    dt = float(dt_raw)
+    if dt <= 0.0:
+        raise ValueError(f"medium.dt must be > 0 (got {dt})")
+    return dt
 
-def _wave_names(sel: str):
-    s = (sel or "sine").lower()
-    return ["sine", "square", "triangle", "modulated"] if s == "all" else [s]
 
-def _wave_func(name: str):
-    n = (name or "sine").lower()
-    if n == "sine":
-        return sine
-    if n == "square":
-        return square
-    if n == "triangle":
-        return triangle
-    if n == "modulated":
-        return lambda f, t: modulated(f, f * 0.1, t, 1.0)
-    return sine
+def _load_cfg_if_needed(cfg):
+    if isinstance(cfg, dict) or cfg is None:
+        return cfg or {}
+    p = Path(str(cfg))
+    if p.suffix.lower() in (".yml", ".yaml") and p.exists():
+        return load_config(str(p))
+    return {}
 
-def _ring_positions(R: float, N: int, omega: float, t: float):
-    idx = np.arange(N, dtype=float)
-    phi = 2.0 * math.pi * idx / float(N) + omega * t
-    x = R * np.cos(phi)
-    y = R * np.sin(phi)
-    z = np.zeros_like(x)
-    return np.stack([x, y, z], axis=-1)
 
-def run(cfg: dict, medium: Medium):
-    out_root = cfg.get("output_dir", "output/toroidal_field_rotation_in_plasma")
-    _ensure_dir(out_root)
+def _normalize_args(cfg, medium, args):
+    if isinstance(cfg, str):
+        if args:
+            cfg, medium = args[0], (args[1] if len(args) > 1 else medium)
+        else:
+            cfg_path = Path(__file__).resolve().parent / "config.yaml"
+            cfg = load_config(str(cfg_path)) if cfg_path.exists() else {}
+    cfg = _load_cfg_if_needed(cfg)
+    return cfg, medium
 
-    R = float(cfg.get("radius", 0.2))
-    N = int(cfg.get("num_charges", 100))
-    omega = float(cfg.get("omega_rot", 1000.0))
-    f_hz = float(cfg.get("frequency_hz", cfg.get("frequency", 1.0e6)))
-    q = float(cfg.get("charge", 1.0e-6))
-    m = float(cfg.get("mass", 1.0))
-    k = float(cfg.get("default_k", 1.0))
 
-    steps, dt = _timebase(cfg, medium)
-    t_arr = np.arange(steps, dtype=float) * dt
+def _drive(kind: str, x):
+    if kind == "sine":
+        return np.sin(x)
+    if kind == "square":
+        return np.sign(np.sin(x))
+    if kind == "triangle":
+        return 2.0 / np.pi * np.arcsin(np.sin(x))
+    if kind == "sawtooth":
+        frac = (x / (2.0 * np.pi)) % 1.0
+        return 2.0 * (frac - 0.5)
+    return np.sin(x)
 
-    names = _wave_names(str(cfg.get("waveform", "sine")))
-    probe = np.array([0.0, 0.0, 0.0], dtype=float)
 
-    # plasma screening at the drive frequency
-    scale = medium.electric_scale_at_freq(f_hz) if medium.is_plasma() else 1.0
+def _plasma_scale(cfg: dict, medium: Medium) -> float:
+    base = _as_float(cfg.get("plasma_scale"), 1.0)
+    props = getattr(medium, "properties", None)
+    if isinstance(props, dict):
+        if props.get("screening_factor") is not None:
+            return _as_float(props.get("screening_factor"), base)
+        # heuristic: boost by eps_r when user didn't set plasma_scale explicitly
+        if "relative_permittivity" in props and "plasma_scale" not in cfg:
+            try:
+                eps_r = float(props["relative_permittivity"])
+                if eps_r > 1.0:
+                    return base * eps_r
+            except Exception:
+                pass
+    return base
 
-    angles = np.linspace(0.0, 2.0 * math.pi, N, endpoint=False)
 
-    for name in names:
-        wave = _wave_func(name)
-        out_dir = os.path.join(out_root, name)
-        _ensure_dir(out_dir)
+def _collision_freq(cfg: dict, medium: Medium) -> float:
+    props = getattr(medium, "properties", {}) if hasattr(medium, "properties") else {}
+    if isinstance(props, dict) and "collision_freq" in props and cfg.get("collision_freq") is None:
+        try:
+            return float(props["collision_freq"])
+        except Exception:
+            pass
+    return _as_float(cfg.get("collision_freq"), 0.0)
 
-        trace = np.zeros(steps, dtype=float)
 
-        for ti, t in enumerate(t_arr):
-            Ftot = np.zeros(3, dtype=float)
-            phi = angles + omega * t
-            pos = np.stack([R * np.cos(phi), R * np.sin(phi), np.zeros_like(phi)], axis=-1)
-            for s in range(N):
-                r_vec = probe - pos[s, :]
-                F = compute_force(
-                    k=k, Q=q, f_hz=f_hz, M=m,
-                    r_vec=r_vec, t=t,
-                    waveform_func=wave,
-                    theta_deg=0.0,
-                    medium_scale=scale
-                )
-                Ftot += F
-            trace[ti] = float(np.linalg.norm(Ftot))
+def _attenuation_for_freq(f_hz: float, nu: float) -> float:
+    # simple collisional attenuation: 1/sqrt(1 + (nu/omega)^2)
+    omega = 2.0 * math.pi * float(f_hz)
+    if omega <= 0.0:
+        return 1.0
+    return 1.0 / math.sqrt(1.0 + (nu / omega) ** 2)
 
-        np.savetxt(
-            os.path.join(out_dir, "toroidal_force_trace.csv"),
-            np.column_stack([t_arr, trace]),
-            delimiter=",", fmt="%.6e",
-            header="time_s,|F|_N", comments=""
-        )
-        save_plot(
-            t_arr, trace,
-            title=f"Toroidal Force vs Time — {name.capitalize()} (Plasma)",
-            xlabel="Time (s)", ylabel="|F| (N)",
-            filepath=os.path.join(out_dir, "toroidal_force_plot.png")
-        )
+
+def run(cfg=None, medium: Medium | None = None, *args, **kwargs):
+    cfg, medium = _normalize_args(cfg, medium, list(args))
+    if medium is None:
+        raise ValueError("medium is required")
+
+    # Inputs (match your prompt defaults)
+    R = _as_float(cfg.get("radius"), 0.2)
+    N = _as_int(cfg.get("num_charges"), 100)
+    omega = _as_float(cfg.get("omega_rot"), 1000.0)   # rad/s, for phase staggering
+    f_hz = _as_float(cfg.get("frequency_hz"), 1.0e6)
+    Q = _as_float(cfg.get("charge"), 1e-6)           # per-source charge
+    m = _as_float(cfg.get("mass"), 1.0)
+    k_const = _as_float(cfg.get("default_k"), 1.0)
+    waveform = str(cfg.get("waveform", "all")).strip().lower()
+    out_dir = cfg.get("output_dir", "output/toroidal_field_rotation_in_plasma")
+
+    # steps takes precedence; fallback to duration_s + dt if missing
+    steps_cfg = cfg.get("steps")
+    duration_s = _as_float(cfg.get("duration_s"), 1.0)
+
+    # Grid resolution: interpret grid_size as integer count
+    grid_n = _as_int(cfg.get("grid_size"), 50)
+
+    _ensure_dir(out_dir)
+    dt = _dt_from_sampling(cfg, medium)
+    steps = _as_int(steps_cfg, max(1, int(duration_s / dt)))
+
+    # Ring source positions
+    idx = np.arange(N)
+    theta = 2.0 * np.pi * idx / max(N, 1)
+    xs = R * np.cos(theta)
+    ys = R * np.sin(theta)
+
+    # Per-source phase (mild rotation-derived spread)
+    phase_offset = (omega / max(f_hz, 1.0)) * (idx / max(N, 1))
+    phase_offset = 2.0 * np.pi * (phase_offset - np.floor(phase_offset))
+
+    # Plasma modifiers
+    nu = _collision_freq(cfg, medium)
+    scale = _plasma_scale(cfg, medium) * _attenuation_for_freq(f_hz, nu)
+
+    # Field amplitude per source and wavenumber
+    A0 = k_const * Q * f_hz * m * scale
+    k_w = 2.0 * math.pi * f_hz / 3.0e8  # ~c effective phase speed
+
+    # Grid (2D)
+    x = np.linspace(-2.0 * R, 2.0 * R, grid_n)
+    y = np.linspace(-2.0 * R, 2.0 * R, grid_n)
+    X, Y = np.meshgrid(x, y, indexing="xy")
+
+    modes = ["sine", "square", "triangle", "sawtooth"] if waveform == "all" else [waveform]
+    results = []
+
+    for mode in modes:
+        field = np.zeros_like(X, dtype=float)
+        # Sum contributions from each source as a radial phase from its position
+        for xi, yi, ph in zip(xs, ys, phase_offset):
+            r = np.hypot(X - xi, Y - yi)
+            field += A0 * _drive(mode, k_w * r + ph)
+
+        potential = -field
+
+        # Save CSVs
+        np.savetxt(os.path.join(out_dir, f"field_{mode}.csv"), field, delimiter=",", fmt="%.6e")
+        np.savetxt(os.path.join(out_dir, f"potential_{mode}.csv"), potential, delimiter=",", fmt="%.6e")
+
+        # Heatmap
+        fig1, ax1 = plt.subplots()
+        im1 = ax1.imshow(field, origin="lower", aspect="auto",
+                         extent=[x.min(), x.max(), y.min(), y.max()])
+        ax1.set_title(f"Toroidal Field (plasma, mode={mode})")
+        ax1.set_xlabel("x")
+        ax1.set_ylabel("y")
+        fig1.colorbar(im1, ax=ax1)
+        fig1.tight_layout()
+        fig1.savefig(os.path.join(out_dir, f"field_{mode}.png"))
+        plt.close(fig1)
+
+        # Quiver of gradient (warning-safe)
+        dy = y[1] - y[0] if len(y) > 1 else 1.0
+        dx = x[1] - x[0] if len(x) > 1 else 1.0
+        dFy, dFx = np.gradient(field, dy, dx)
+
+        step = max(1, grid_n // 25)
+        Xs = X[::step, ::step]; Ys = Y[::step, ::step]
+        Us = dFx[::step, ::step]; Vs = dFy[::step, ::step]
+
+        mag = np.hypot(Us, Vs)
+        thr = max(float(np.nanmax(mag)), 1.0) * 1e-12
+        mask = mag > thr
+
+        fig2, ax2 = plt.subplots()
+        if np.any(mask):
+            ax2.quiver(
+                Xs[mask], Ys[mask], Us[mask], Vs[mask],
+                angles="xy", scale_units="xy", scale=1.0, width=0.003
+            )
+        else:
+            ax2.text(0.5, 0.5, "All-zero vector field",
+                     ha="center", va="center", transform=ax2.transAxes)
+
+        ax2.set_title(f"Field Gradient (quiver) — plasma/{mode}")
+        ax2.set_xlabel("x")
+        ax2.set_ylabel("y")
+        fig2.tight_layout()
+        fig2.savefig(os.path.join(out_dir, f"field_grad_{mode}.png"))
+        plt.close(fig2)
+
+        results.append(mode)
+
+    # Summary
+    np.savez(
+        os.path.join(out_dir, "summary.npz"),
+        modes=np.array(results, dtype=object),
+        grid_n=grid_n,
+        radius=R,
+        num_charges=N,
+        omega_rot=omega,
+        A0=A0,
+        k_w=k_w,
+        dt=dt,
+        steps=steps,
+        scale=scale,
+        nu=nu,
+        ring_x=xs,
+        ring_y=ys,
+    )
+
+    return {
+        "modes": results,
+        "dt": dt,
+        "steps": steps,
+        "grid_n": grid_n,
+        "num_charges": N,
+        "radius": R,
+        "output_dir": out_dir,
+        "plasma_scale": scale,
+    }
+
+
+def run_noargs():
+    cfg_path = Path(__file__).resolve().parent / "config.yaml"
+    cfg = load_config(str(cfg_path)) if cfg_path.exists() else {}
+    medium = Medium({"medium": cfg.get("medium", cfg)})
+    return run(cfg, medium)

@@ -1,164 +1,229 @@
 import os
-import time
 import math
+from pathlib import Path
+
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
 from core.medium import Medium
-from core.physics import compute_force
-from core.particle_engine import update_particles
-from core.visualizer import save_plot, save_scatter
-from core.logger import save_csv
-from core.waveform_generator import sine, square, triangle, modulated
+from core.config_loader import load_config
 
-def _ensure_dir(p: str):
-    os.makedirs(p, exist_ok=True)
 
-def _timebase(cfg: dict, medium: Medium):
-    # Priority: explicit steps+dt; otherwise duration_s+sampling_rate; else medium.dt
-    if "steps" in cfg and "dt" in cfg:
-        steps = int(cfg["steps"])
-        dt = float(cfg["dt"])
-        return steps, dt
-    sr = float(cfg.get("sampling_rate", cfg.get("sample_rate", 0))) or 0.0
+def _ensure_dir(path: str) -> None:
+    os.makedirs(path, exist_ok=True)
+
+
+def _as_float(v, default: float) -> float:
+    if v is None:
+        return float(default)
+    return float(v)
+
+
+def _as_int(v, default: int) -> int:
+    if v is None:
+        return int(default)
+    return int(v)
+
+
+def _dt_from_sampling(cfg: dict, medium: Medium) -> float:
+    sr = float(cfg.get("sampling_rate", 0.0))
     if sr > 0.0:
-        dt = 1.0 / sr
-        steps = max(1, int(float(cfg.get("duration_s", 1.0)) / dt))
-        return steps, dt
-    dt = float(medium.dt)
-    steps = max(1, int(float(cfg.get("duration_s", 1.0)) / dt))
-    return steps, dt
+        return 1.0 / sr
+    dt_raw = getattr(medium, "dt", None)
+    if dt_raw is None:
+        raise ValueError("medium.dt is missing; set sampling_rate or define medium.dt")
+    dt = float(dt_raw)
+    if dt <= 0.0:
+        raise ValueError(f"medium.dt must be > 0 (got {dt})")
+    return dt
 
-def _wave_func(name: str):
-    n = (name or "sine").lower()
-    if n == "sine":
-        return sine
-    if n == "square":
-        return square
-    if n == "triangle":
-        return triangle
-    if n == "modulated":
-        # modulated(f_carrier, f_mod, t, index)
-        return lambda f, t: modulated(f, f * 0.1, t, 1.0)
-    return sine
 
-def _init_positions(N: int, R: float, rng: np.random.Generator):
-    # Uniform in cube [-R, R]^3 (preserve your prior behavior)
-    return rng.uniform(-R, R, size=(N, 3))
+def _load_cfg_if_needed(cfg):
+    if isinstance(cfg, dict) or cfg is None:
+        return cfg or {}
+    p = Path(str(cfg))
+    if p.suffix.lower() in (".yml", ".yaml") and p.exists():
+        return load_config(str(p))
+    return {}
 
-def _theta_to_unit(theta_deg: float):
-    # optional directional knob if you ever need orientation; currently unused (set theta_deg=0)
-    th = math.radians(float(theta_deg))
-    return np.array([math.cos(th), math.sin(th), 0.0], dtype=float)
 
-def run(cfg: dict, medium: Medium):
-    out_root = cfg.get("output_dir", "output/plasma_resonance_collapse")
-    _ensure_dir(out_root)
+def _normalize_args(cfg, medium, args):
+    if isinstance(cfg, str):
+        if args:
+            cfg, medium = args[0], (args[1] if len(args) > 1 else medium)
+        else:
+            cfg_path = Path(__file__).resolve().parent / "config.yaml"
+            cfg = load_config(str(cfg_path)) if cfg_path.exists() else {}
+    cfg = _load_cfg_if_needed(cfg)
+    return cfg, medium
 
-    waveform_choice = str(cfg.get("waveform", "sine")).lower()
-    wave_list = ["sine", "square", "triangle", "modulated"] if waveform_choice == "all" else [waveform_choice]
 
-    N = int(cfg.get("particles", 500))
-    R = float(cfg.get("radius", 1.0))
-    f_hz = float(cfg.get("frequency", cfg.get("frequency_hz", 5.0e5)))
-    Q = float(cfg.get("charge", 1.0e-9))   # per particle charge scale
-    M = float(cfg.get("mass", 1.0e-6))
-    k = float(cfg.get("default_k", 1.0))
-    theta_deg = float(cfg.get("theta", 0.0))
+def _plasma_scale(cfg: dict, medium: Medium) -> float:
+    base = _as_float(cfg.get("plasma_scale"), 1.0)
+    props = getattr(medium, "properties", None)
+    if isinstance(props, dict):
+        if props.get("screening_factor") is not None:
+            return _as_float(props.get("screening_factor"), base)
+        if "relative_permittivity" in props and "plasma_scale" not in cfg:
+            try:
+                eps_r = float(props["relative_permittivity"])
+                if eps_r > 1.0:
+                    return base * eps_r
+            except Exception:
+                pass
+    return base
 
-    steps, dt = _timebase(cfg, medium)
 
-    # Medium factors
-    scale = medium.electric_scale_at_freq(f_hz) if medium.is_plasma() else 1.0
-    gamma_v = float(medium.velocity_drag())  # simple linear drag in velocity update
+def _collision_freq(cfg: dict, medium: Medium) -> float:
+    # Prefer cfg override, else medium.properties.collision_freq
+    props = getattr(medium, "properties", {}) if hasattr(medium, "properties") else {}
+    if isinstance(props, dict) and "collision_freq" in props and cfg.get("collision_freq") is None:
+        try:
+            return float(props["collision_freq"])
+        except Exception:
+            pass
+    return _as_float(cfg.get("collision_freq"), 0.0)
 
-    # Seed and allocate
+
+def _attenuation_for_freq(f_hz: float, nu: float) -> float:
+    # 1 / sqrt(1 + (nu/omega)^2)
+    omega = 2.0 * math.pi * float(f_hz)
+    if omega <= 0.0:
+        return 1.0
+    return 1.0 / math.sqrt(1.0 + (nu / omega) ** 2)
+
+
+def _drive(kind: str, t: np.ndarray, f_hz: float) -> np.ndarray:
+    w = 2.0 * math.pi * float(f_hz)
+    if kind == "sine":
+        return np.sin(w * t)
+    if kind == "square":
+        return np.sign(np.sin(w * t))
+    if kind == "triangle":
+        # scaled saw mirrored
+        return 2.0 / math.pi * np.arcsin(np.sin(w * t))
+    if kind == "sawtooth":
+        # range [-1,1]
+        frac = (t * f_hz) % 1.0
+        return 2.0 * (frac - 0.5)
+    return np.sin(w * t)
+
+
+def _run_single_mode(cfg: dict, medium: Medium, mode: str):
+    particles = _as_int(cfg.get("particles"), 500)
+    r0 = _as_float(cfg.get("radius"), 1.0)
+    f_hz = _as_float(cfg.get("frequency"), 5.0e5)
+    Q = _as_float(cfg.get("charge"), 1e-9)
+    m = _as_float(cfg.get("mass"), 1e-6)
+    k_const = _as_float(cfg.get("default_k"), 1.0)
+    steps_cfg = cfg.get("steps")
+    steps = _as_int(steps_cfg, 1000)
+    theta0 = math.radians(_as_float(cfg.get("theta"), 0.0))
+    out_dir = cfg.get("output_dir", "output/plasma_resonance_collapse")
+
+    _ensure_dir(out_dir)
+    dt = _dt_from_sampling(cfg, medium)
+
+    nu = _collision_freq(cfg, medium)
+    gamma = _as_float(cfg.get("magnetic_drag_coeff"), 0.0) + nu
+    scale = _plasma_scale(cfg, medium) * _attenuation_for_freq(f_hz, nu)
+
+    F0 = k_const * Q * f_hz * m * scale
+
+    t = np.arange(steps) * dt
+    drive = _drive(mode, t, f_hz)
+
     rng = np.random.default_rng(42)
-    init_pos = _init_positions(N, R, rng)
+    angles = theta0 + rng.uniform(0, 2 * math.pi, size=particles)
+    r = np.full(particles, r0, dtype=float) + rng.normal(0.0, 0.01 * r0, size=particles)
+    vr = np.zeros_like(r)
 
-    for wf_name in wave_list:
-        out_dir = os.path.join(out_root, wf_name)
-        _ensure_dir(out_dir)
+    mean_r = np.empty(steps, dtype=float)
+    min_r = np.empty(steps, dtype=float)
+    max_r = np.empty(steps, dtype=float)
 
-        # state
-        positions = init_pos.copy()
-        velocities = np.zeros_like(positions)
-        force_trace = np.zeros(steps, dtype=float)   # average v^2 proxy for kinetic energy (arbitrary units)
-        radius_trace = np.zeros(steps, dtype=float)  # mean distance from origin
+    for k in range(steps):
+        a = (F0 * drive[k]) / m - gamma * vr
+        vr = vr + a * dt
+        r = r + vr * dt
+        mean_r[k] = float(np.mean(r))
+        min_r[k] = float(np.min(r))
+        max_r[k] = float(np.max(r))
 
-        wave = _wave_func(wf_name)
-        u_theta = _theta_to_unit(theta_deg)
+    collapse_idx = int(np.argmax(mean_r <= 0.9 * r0)) if np.any(mean_r <= 0.9 * r0) else -1
 
-        start = time.time()
+    tag = mode
+    np.savetxt(os.path.join(out_dir, f"time_series_{tag}.csv"),
+               np.column_stack([t, mean_r, min_r, max_r]),
+               delimiter=",", fmt="%.6e", header="t,mean_r,min_r,max_r")
 
-        for step in range(steps):
-            t = step * dt
+    fig1, ax1 = plt.subplots()
+    ax1.plot(t, mean_r, label="mean r")
+    ax1.plot(t, min_r, label="min r", alpha=0.7)
+    ax1.plot(t, max_r, label="max r", alpha=0.7)
+    if collapse_idx >= 0:
+        ax1.axvline(t[collapse_idx], linestyle="--", alpha=0.6)
+    ax1.set_xlabel("Time (s)")
+    ax1.set_ylabel("Radius")
+    ax1.set_title(f"Resonance Collapse — {mode}")
+    ax1.grid(True)
+    ax1.legend()
+    fig1.tight_layout()
+    fig1.savefig(os.path.join(out_dir, f"radius_timeseries_{tag}.png"))
+    plt.close(fig1)
 
-            # Accumulate pairwise forces (O(N^2)). For N=500 this is heavy but acceptable for correctness.
-            acc = np.zeros_like(positions)
-            for i in range(N):
-                Fi = np.zeros(3, dtype=float)
-                pi = positions[i]
-                for j in range(N):
-                    if i == j:
-                        continue
-                    r_vec = pi - positions[j]  # from j -> i
-                    # Correct call: use keyword args, include medium_scale and waveform
-                    Fij = compute_force(
-                        k=k, Q=Q, f_hz=f_hz, M=M,
-                        r_vec=r_vec, t=t,
-                        waveform_func=wave,
-                        theta_deg=0.0,
-                        medium_scale=scale
-                    )
-                    Fi += Fij
-                acc[i] = Fi / M
+    fig2, ax2 = plt.subplots(subplot_kw={"projection": "polar"})
+    ax2.scatter(angles, r, s=6, alpha=0.6)
+    ax2.set_title(f"Final Particle Radii — {mode}")
+    fig2.tight_layout()
+    fig2.savefig(os.path.join(out_dir, f"final_polar_{tag}.png"))
+    plt.close(fig2)
 
-            # Simple linear velocity drag from medium collisions
-            if gamma_v > 0.0:
-                acc -= gamma_v * velocities
+    np.savez(
+        os.path.join(out_dir, f"results_{tag}.npz"),
+        t=t, mean_r=mean_r, min_r=min_r, max_r=max_r,
+        r_final=r, angles=angles,
+        collapse_idx=collapse_idx, r0=r0,
+        params=dict(F0=F0, Q=Q, f_hz=f_hz, m=m, k=k_const, dt=dt, steps=steps,
+                    gamma=gamma, scale=scale)
+    )
 
-            # Integrate
-            positions, velocities = update_particles(positions, velocities, acc, dt)
+    return {
+        "mode": mode,
+        "dt": dt,
+        "steps": steps,
+        "collapse_index": collapse_idx,
+        "collapse_time": (float(t[collapse_idx]) if collapse_idx >= 0 else None),
+        "output_dir": out_dir,
+    }
 
-            # Diagnostics
-            v2 = float(np.mean(np.sum(velocities * velocities, axis=1)))
-            avg_r = float(np.mean(np.linalg.norm(positions, axis=1)))
-            force_trace[step] = v2
-            radius_trace[step] = avg_r
 
-            # Sparse snapshots
-            if (step % 100) == 0 or (step == steps - 1):
-                save_csv(positions.tolist(), ["x", "y", "z"], os.path.join(out_dir, f"positions_t{step:04d}.csv"))
-                save_scatter(
-                    positions[:, 0], positions[:, 1],
-                    title=f"Step {step}",
-                    xlabel="X", ylabel="Y",
-                    filepath=os.path.join(out_dir, f"frame_{step:04d}.png")
-                )
+def run(cfg=None, medium: Medium | None = None, *args, **kwargs):
+    cfg, medium = _normalize_args(cfg, medium, list(args))
+    if medium is None:
+        raise ValueError("medium is required")
 
-        # Traces and summaries
-        save_plot(
-            list(range(steps)), force_trace,
-            title="Average Kinetic Proxy (⟨v²⟩)",
-            xlabel="Step", ylabel="Velocity² (arb.)",
-            filepath=os.path.join(out_dir, "energy.png")
-        )
-        save_plot(
-            list(range(steps)), radius_trace,
-            title="Mean Particle Radius",
-            xlabel="Step", ylabel="Distance from Origin (m)",
-            filepath=os.path.join(out_dir, "radius.png")
-        )
+    waveform = str(cfg.get("waveform", "sine")).strip().lower()
+    modes = ["sine", "square", "triangle", "sawtooth"] if waveform == "all" else [waveform]
 
-        save_csv([[i, force_trace[i]] for i in range(steps)],
-                 ["step", "v2_mean"],
-                 os.path.join(out_dir, "collapse_trace.csv"))
+    results = []
+    for mode in modes:
+        results.append(_run_single_mode(cfg, medium, mode))
 
-        save_csv([[i, radius_trace[i]] for i in range(steps)],
-                 ["step", "mean_radius_m"],
-                 os.path.join(out_dir, "radius_trace.csv"))
+    # Return a compact summary; detailed artifacts are written to disk.
+    return {
+        "modes": [r["mode"] for r in results],
+        "dt": results[0]["dt"],
+        "steps": results[0]["steps"],
+        "collapse_times": [r["collapse_time"] for r in results],
+        "output_dir": results[0]["output_dir"],
+    }
 
-        elapsed = time.time() - start
-        save_csv([[N, R, f_hz, Q, M, k, steps, dt, scale, gamma_v, elapsed]],
-                 ["particles", "radius_m", "frequency_hz", "charge_C", "mass_kg", "k",
-                  "steps", "dt_s", "medium_scale", "velocity_drag", "elapsed_s"],
-                 os.path.join(out_dir, "run_summary.csv"))
+
+def run_noargs():
+    cfg_path = Path(__file__).resolve().parent / "config.yaml"
+    cfg = load_config(str(cfg_path)) if cfg_path.exists() else {}
+    medium = Medium({"medium": cfg.get("medium", cfg)})
+    return run(cfg, medium)

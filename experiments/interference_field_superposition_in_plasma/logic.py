@@ -1,110 +1,274 @@
 import os
 import math
-import numpy as np
-import matplotlib.pyplot as plt
-from core.medium import Medium
-from core.waveform_generator import sine, square, triangle
-from core.physics import compute_force
-from core.visualizer import save_plot
+from pathlib import Path
 
-def _ensure_dir(path: str):
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+from core.medium import Medium
+from core.config_loader import load_config
+
+
+def _ensure_dir(path: str) -> None:
     os.makedirs(path, exist_ok=True)
 
-def _wave_func(name: str):
-    n = (name or "sine").lower()
-    if n == "sine":
-        return sine
-    if n == "square":
-        return square
-    if n == "triangle":
-        return triangle
-    return sine
 
-def _domain_from_cfg(cfg: dict):
-    gs = cfg.get("grid_size", [1.0, 1.0, 1.0])
-    if isinstance(gs, (int, float)):
-        Lx = Ly = float(gs)
+def _to_float_list_flexible(val):
+    if val is None:
+        return []
+    if isinstance(val, (list, tuple)):
+        items = list(val)
     else:
-        Lx = float(gs[0])
-        Ly = float(gs[1])
-    n = int(cfg.get("grid_points", 50))
-    x = np.linspace(-0.5 * Lx, 0.5 * Lx, n)
-    y = np.linspace(-0.5 * Ly, 0.5 * Ly, n)
-    X, Y = np.meshgrid(x, y, indexing="xy")
-    return X, Y
+        items = [x.strip() for x in str(val).split(",")]
+    out = []
+    for x in items:
+        if x == "":
+            continue
+        out.append(float(x))
+    return out
 
-def _dt(cfg: dict, medium: Medium) -> float:
-    sr = float(cfg.get("sampling_rate", 0)) or 0.0
-    return (1.0 / sr) if sr > 0.0 else float(medium.dt)
 
-def _source_positions(Lx: float, Ly: float):
-    a = 0.25 * Lx
-    return np.array([[-a, 0.0, 0.0], [0.0, 0.0, 0.0], [a, 0.0, 0.0]], dtype=float)
+def _get_list(cfg: dict, list_key: str, scalar_key: str, default_list):
+    lst = _to_float_list_flexible(cfg.get(list_key))
+    if lst:
+        return lst
+    lst = _to_float_list_flexible(cfg.get(scalar_key))
+    if lst:
+        return lst
+    return list(default_list)
 
-def run(cfg: dict, medium: Medium):
+
+def _as_float(val, default: float) -> float:
+    if val is None:
+        return float(default)
+    return float(val)
+
+
+def _as_int(val, default: int) -> int:
+    if val is None:
+        return int(default)
+    return int(val)
+
+
+def _dt_from_sampling(cfg: dict, medium: Medium) -> float:
+    sr = float(cfg.get("sampling_rate", 0.0))
+    if sr > 0.0:
+        return 1.0 / sr
+    dt_raw = getattr(medium, "dt", None)
+    if dt_raw is None:
+        raise ValueError("medium.dt is missing; set sampling_rate or define medium.dt")
+    dt = float(dt_raw)
+    if dt <= 0.0:
+        raise ValueError(f"medium.dt must be > 0 (got {dt})")
+    return dt
+
+
+def _load_cfg_if_needed(cfg):
+    if isinstance(cfg, dict) or cfg is None:
+        return cfg or {}
+    p = Path(str(cfg))
+    if p.suffix.lower() in (".yml", ".yaml") and p.exists():
+        return load_config(str(p))
+    return {}
+
+
+def _normalize_args(cfg, medium, args):
+    # Accept: (cfg, medium), ("exp_name", cfg, medium), (cfg_path, medium), (cfg), ()
+    if isinstance(cfg, str):
+        if args:
+            cfg, medium = args[0], (args[1] if len(args) > 1 else medium)
+        else:
+            cfg_path = Path(__file__).resolve().parent / "config.yaml"
+            cfg = load_config(str(cfg_path)) if cfg_path.exists() else {}
+    cfg = _load_cfg_if_needed(cfg)
+    return cfg, medium
+
+
+def _tile_to_length(lst, n):
+    if len(lst) == n:
+        return lst
+    if len(lst) == 1:
+        return [lst[0]] * n
+    reps = math.ceil(n / len(lst))
+    return (lst * reps)[:n]
+
+
+def _unit_dirs(mode: str, n: int, spin_direction: str):
+    dirs = []
+    sgn = -1.0 if str(spin_direction).lower().startswith("counter") else 1.0
+    if str(mode).lower() == "random":
+        rng = np.random.default_rng(12345)
+        angles = rng.uniform(0, 2 * np.pi, size=n)
+    else:
+        angles = np.linspace(0.0, 2 * np.pi, num=n, endpoint=False)
+    for a in angles:
+        a = sgn * a
+        dirs.append((math.cos(a), math.sin(a)))
+    return dirs
+
+
+def _plasma_scale(cfg: dict, medium: Medium) -> float:
+    base = _as_float(cfg.get("plasma_scale"), 1.0)
+    props = getattr(medium, "properties", None)
+    if isinstance(props, dict):
+        if props.get("screening_factor") is not None:
+            return _as_float(props.get("screening_factor"), base)
+        if "relative_permittivity" in props and "plasma_scale" not in cfg:
+            try:
+                eps_r = float(props["relative_permittivity"])
+                if eps_r > 1.0:
+                    return base * eps_r
+            except Exception:
+                pass
+    return base
+
+
+def _attenuation_per_freq(freqs_hz, cfg: dict, medium: Medium):
+    # Simple collisional attenuation: 1 / sqrt(1 + (nu/omega)^2)
+    nu = _as_float(cfg.get("collision_freq"), float(getattr(getattr(medium, "properties", {}), "get", lambda *_: 0.0)("collision_freq", 0.0)))
+    att = []
+    for f in freqs_hz:
+        omega = 2.0 * math.pi * float(f)
+        if omega <= 0.0:
+            att.append(1.0)
+        else:
+            att.append(1.0 / math.sqrt(1.0 + (nu / omega) ** 2))
+    return att
+
+
+def run(cfg=None, medium: Medium | None = None, *args, **kwargs):
+    cfg, medium = _normalize_args(cfg, medium, list(args))
+    if medium is None:
+        raise ValueError("medium is required")
+
+    # Inputs (lists or single scalars)
+    charges = _get_list(cfg, "charges", "charge", [1e-3, 1e-3, 1e-3])
+    freqs_hz = _get_list(cfg, "frequencies", "frequency", [1.0e6, 1.0e6, 1.0e6])
+    phases_deg = _get_list(cfg, "phase_offsets", "phase_offset", [0.0, 120.0, 240.0])
+
+    n_sources = max(len(charges), len(freqs_hz), len(phases_deg))
+    charges = _tile_to_length(charges, n_sources)
+    freqs_hz = _tile_to_length(freqs_hz, n_sources)
+    phases_deg = _tile_to_length(phases_deg, n_sources)
+
+    mass = _as_float(cfg.get("mass"), 1.0)
+    k_const = _as_float(cfg.get("default_k"), 1.0)
+    duration_s = _as_float(cfg.get("duration_s"), 1.0)
+    wave_speed = _as_float(cfg.get("wave_speed"), 3.0e8)
+    spin_direction = str(cfg.get("spin_direction", "clockwise"))
+    mode = str(cfg.get("mode", "random"))
+
+    grid_points = _as_int(cfg.get("grid_points"), 50)
+    gsize = _to_float_list_flexible(cfg.get("grid_size")) or [1.0, 1.0, 1.0]
+    if len(gsize) == 1:
+        gsize = [gsize[0], gsize[0], gsize[0]]
+    Lx, Ly = float(gsize[0]), float(gsize[1])
+
     out_dir = cfg.get("output_dir", "output/interference_field_superposition_in_plasma")
     _ensure_dir(out_dir)
 
-    charges = [float(x) for x in cfg.get("charges", [0.001, 0.001, 0.001])]
-    freqs_hz = [float(x) for x in cfg.get("frequencies", [1e6, 1e6, 1e6])]
-    phases_deg = [float(x) for x in cfg.get("phase_offsets", [0.0, 120.0, 240.0])]
-    mass = float(cfg.get("mass", 1.0))
-    k = float(cfg.get("default_k", 1.0))
-    wave = _wave_func(cfg.get("waveform", "sine"))
+    dt = _dt_from_sampling(cfg, medium)
+    steps = max(1, int(duration_s / dt))
 
-    X, Y = _domain_from_cfg(cfg)
-    Lx = X.max() - X.min()
-    Ly = Y.max() - Y.min()
-    sources = _source_positions(Lx, Ly)
-    n = X.shape[0]
+    dirs = _unit_dirs(mode, n_sources, spin_direction)
+    base_scale = _plasma_scale(cfg, medium)
+    atten = _attenuation_per_freq(freqs_hz, cfg, medium)
 
-    duration_s = float(cfg.get("duration_s", 1.0))
-    t = 0.5 * duration_s
-    dt = _dt(cfg, medium)
+    amps = [k_const * float(Q) * float(f) * mass * base_scale * a for Q, f, a in zip(charges, freqs_hz, atten)]
+    ks = [2.0 * math.pi * float(f) / wave_speed for f in freqs_hz]
+    phases = [math.radians(float(p)) for p in phases_deg]
 
-    Fx = np.zeros_like(X, dtype=float)
-    Fy = np.zeros_like(Y, dtype=float)
+    x = np.linspace(0.0, Lx, grid_points)
+    y = np.linspace(0.0, Ly, grid_points)
+    X, Y = np.meshgrid(x, y, indexing="xy")
 
-    for sx, sy, sz in sources:
-        for Q, f_hz, ph_deg in zip(charges, freqs_hz, phases_deg):
-            scale = medium.electric_scale_at_freq(float(f_hz)) if medium.is_plasma() else 1.0
-            t_shift = t + (math.radians(ph_deg) / (2.0 * math.pi * f_hz))
-            r_vec = np.stack([(X - sx), (Y - sy), np.zeros_like(X)], axis=-1)
+    field = np.zeros_like(X, dtype=float)
+    for (ux, uy), A, k_w, phi in zip(dirs, amps, ks, phases):
+        field += A * np.cos(k_w * (ux * X + uy * Y) + phi)
 
-            for i in range(n):
-                for j in range(n):
-                    F = compute_force(
-                        k=k, Q=Q, f_hz=f_hz, M=mass,
-                        r_vec=r_vec[i, j, :], t=t_shift,
-                        waveform_func=wave,
-                        theta_deg=0.0,
-                        medium_scale=scale
-                    )
-                    Fx[i, j] += F[0]
-                    Fy[i, j] += F[1]
+    potential = -field
 
-    Fmag = np.sqrt(Fx * Fx + Fy * Fy)
+    dy = y[1] - y[0] if len(y) > 1 else 1.0
+    dx = x[1] - x[0] if len(x) > 1 else 1.0
+    dFy, dFx = np.gradient(field, dy, dx)
+    Fx = dFx
+    Fy = dFy
 
-    np.savetxt(os.path.join(out_dir, "force_magnitude.csv"), Fmag, delimiter=",", fmt="%.6e")
+    # Optional: simple 2D vorticity proxy
+    vorticity = np.gradient(Fy, dx, axis=1) - np.gradient(Fx, dy, axis=0)
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    h = ax.imshow(Fmag, extent=[X.min(), X.max(), Y.min(), Y.max()],
-                  origin="lower", cmap="inferno", aspect="auto")
-    ax.set_xlabel("x (m)")
-    ax.set_ylabel("y (m)")
-    ax.set_title("Force Magnitude (N) — Plasma")
-    plt.colorbar(h, ax=ax, label="|F| (N)")
-    plt.tight_layout()
-    fig.savefig(os.path.join(out_dir, "force_magnitude.png"))
-    plt.close(fig)
+    # Outputs
+    np.savetxt(os.path.join(out_dir, "force_map.csv"), field, delimiter=",", fmt="%.6e")
+    np.savetxt(os.path.join(out_dir, "potential_map.csv"), potential, delimiter=",", fmt="%.6e")
+    np.savetxt(os.path.join(out_dir, "force_vector_x.csv"), Fx, delimiter=",", fmt="%.6e")
+    np.savetxt(os.path.join(out_dir, "force_vector_y.csv"), Fy, delimiter=",", fmt="%.6e")
+    np.savetxt(os.path.join(out_dir, "vorticity.csv"), vorticity, delimiter=",", fmt="%.6e")
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.quiver(X, Y, Fx, Fy, scale=50)
-    ax.set_xlabel("x (m)")
-    ax.set_ylabel("y (m)")
-    ax.set_title("Force Vector Field — Plasma")
-    plt.tight_layout()
-    fig.savefig(os.path.join(out_dir, "vector_field.png"))
-    plt.close(fig)
+    ph = np.column_stack([
+        np.array(amps, dtype=float),
+        np.array(freqs_hz, dtype=float),
+        np.array(phases_deg, dtype=float),
+        np.array([d[0] for d in dirs], dtype=float),
+        np.array([d[1] for d in dirs], dtype=float),
+        np.array(ks, dtype=float),
+        np.array(atten, dtype=float),
+    ])
+    np.savetxt(
+        os.path.join(out_dir, "phasor_summary.csv"),
+        ph,
+        delimiter=",",
+        fmt="%.6e",
+        header="amplitude,frequency_hz,phase_deg,ux,uy,k_wave,atten"
+    )
 
-    return {"force_x": Fx, "force_y": Fy}
+    fig1, ax1 = plt.subplots()
+    im1 = ax1.imshow(field, origin="lower", aspect="auto")
+    ax1.set_title("Plasma Interference Force Map")
+    ax1.set_xlabel("x index")
+    ax1.set_ylabel("y index")
+    fig1.colorbar(im1, ax=ax1)
+    fig1.tight_layout()
+    fig1.savefig(os.path.join(out_dir, "force_map.png"))
+    plt.close(fig1)
+
+    fig2, ax2 = plt.subplots()
+    im2 = ax2.imshow(potential, origin="lower", aspect="auto")
+    ax2.set_title("Potential Map (surrogate)")
+    ax2.set_xlabel("x index")
+    ax2.set_ylabel("y index")
+    fig2.colorbar(im2, ax=ax2)
+    fig2.tight_layout()
+    fig2.savefig(os.path.join(out_dir, "potential_map.png"))
+    plt.close(fig2)
+
+    step = max(1, grid_points // 25)
+    fig3, ax3 = plt.subplots()
+    ax3.quiver(
+        X[::step, ::step], Y[::step, ::step],
+        Fx[::step, ::step], Fy[::step, ::step],
+        scale=None
+    )
+    ax3.set_title("Force Vector Field (quiver)")
+    ax3.set_xlabel("x")
+    ax3.set_ylabel("y")
+    fig3.tight_layout()
+    fig3.savefig(os.path.join(out_dir, "force_vector_quiver.png"))
+    plt.close(fig3)
+
+    return {
+        "steps": steps,
+        "dt": dt,
+        "output_dir": out_dir,
+        "grid_points": grid_points,
+        "sources": n_sources,
+        "plasma_scale": base_scale,
+    }
+
+
+def run_noargs():
+    cfg_path = Path(__file__).resolve().parent / "config.yaml"
+    cfg = load_config(str(cfg_path)) if cfg_path.exists() else {}
+    medium = Medium({"medium": cfg.get("medium", cfg)})
+    return run(cfg, medium)

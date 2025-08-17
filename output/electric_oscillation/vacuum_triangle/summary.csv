@@ -1,0 +1,2 @@
+waveform,peak,rms,crest_factor,mean,dt,steps,Q,f_hz,m,k,child
+sine,9.248263e-10,2.471871e-10,3.741402e+00,-7.094642e-11,1.000000e-04,10000,1.000000e-06,1.000000e+06,1.000000e+00,1.000000e+00,vacuum_triangle

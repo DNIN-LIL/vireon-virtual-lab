@@ -1,6 +1,5 @@
-medium:
-  type: vacuum
-  dt: 1.0e-4
+medium: vacuum
+dt: 1.0e-4
 
 frequency_hz: 1.0e6
 charge: 1.0e-9

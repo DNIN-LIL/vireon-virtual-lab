@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 
+
 def save_plot(x, y, title="Plot", xlabel="X", ylabel="Y", filepath=None, marker=''):
     if filepath:
         os.makedirs(os.path.dirname(filepath), exist_ok=True)

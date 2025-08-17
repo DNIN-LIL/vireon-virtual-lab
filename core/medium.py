@@ -1,4 +1,3 @@
-# core/medium.py
 import math
 
 class Medium:

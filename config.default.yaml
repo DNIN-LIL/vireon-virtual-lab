@@ -13,15 +13,15 @@ waveform: sine
 sample_rate: 1000
 
 medium:
-  type: vacuum            # vacuum | plasma
-  # Shared numerics
-  dt: 1.0e-4              # fallback if an experiment doesn’t specify
-  # Plasma-only parameters (cold plasma, Drude-like response)
-  plasma_frequency: 0.0   # rad/s; ωp = sqrt(Ne*q^2/(ε0*m_e))
-  collision_freq: 0.0     # rad/s; ν, effective electron collision rate
-  relative_permittivity: 1.0  # static εr for low-frequency or DC behavior
-  # Optional helpers for time-domain scaling of driven fields
-  drive_frequency: null   # rad/s; set if a single-tone drive is known
-  electric_screening_mode: auto   # auto | fixed
-  electric_screening_fixed: 1.0   # multiplier when mode=fixed
-  magnetic_drag_coeff: 0.0        # N·s/m, optional extra drag
+type: vacuum            # vacuum | plasma
+# Shared numerics
+dt: 1.0e-4              # fallback if an experiment doesn’t specify
+# Plasma-only parameters (cold plasma, Drude-like response)
+plasma_frequency: 0.0   # rad/s; ωp = sqrt(Ne*q^2/(ε0*m_e))
+collision_freq: 0.0     # rad/s; ν, effective electron collision rate
+relative_permittivity: 1.0  # static εr for low-frequency or DC behavior
+# Optional helpers for time-domain scaling of driven fields
+drive_frequency: null   # rad/s; set if a single-tone drive is known
+electric_screening_mode: auto   # auto | fixed
+electric_screening_fixed: 1.0   # multiplier when mode=fixed
+magnetic_drag_coeff: 0.0        # N·s/m, optional extra drag

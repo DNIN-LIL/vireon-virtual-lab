@@ -1,6 +1,5 @@
-medium:
-  type: vacuum
-  dt: 1.0e-4
+medium: vacuum
+dt: 1.0e-4
 
 radius: 0.2             # ring radius (meters)
 num_charges: 100        # sources on the ring

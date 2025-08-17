@@ -1,6 +1,5 @@
-medium:
-  type: vacuum
-  dt: 1.0e-4
+medium: vacuum
+dt: 1.0e-4
 
 # Constant q·f sweep: keep charge*frequency fixed, vary mass
 charge: 1.0e-6          # C

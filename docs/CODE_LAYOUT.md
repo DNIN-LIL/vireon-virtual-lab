@@ -56,34 +56,6 @@ Vireon/
 ├── ├── ├── __init__.py
 ├── ├── ├── config.yaml
 ├── ├── └── logic.py
-├── ├── electric_oscillation/
-├── ├── ├── __init__.py
-├── ├── ├── plasma_sine/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── plasma_square/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── plasma_triangle/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── run_all.py
-├── ├── ├── shared_logic.py
-├── ├── ├── vacuum_sine/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── vacuum_square/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── └── vacuum_triangle/
-├── ├── └── ├── __init__.py
-├── ├── └── ├── config.yaml
-├── ├── └── └── logic.py
 ├── ├── field_orientation_variance/
 ├── ├── ├── __init__.py
 ├── ├── ├── config.yaml
@@ -100,34 +72,6 @@ Vireon/
 ├── ├── ├── __init__.py
 ├── ├── ├── config.yaml
 ├── ├── └── logic.py
-├── ├── magnetic_oscillation/
-├── ├── ├── __init__.py
-├── ├── ├── plasma_sine/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── plasma_square/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── plasma_triangle/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── run_all.py
-├── ├── ├── shared_logic.py
-├── ├── ├── vacuum_sine/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── ├── vacuum_square/
-├── ├── ├── ├── __init__.py
-├── ├── ├── ├── config.yaml
-├── ├── ├── └── logic.py
-├── ├── └── vacuum_triangle/
-├── ├── └── ├── __init__.py
-├── ├── └── ├── config.yaml
-├── ├── └── └── logic.py
 ├── ├── mass_scaling_at_constant_qf/
 ├── ├── ├── __init__.py
 ├── ├── ├── config.yaml
@@ -168,25 +112,184 @@ Vireon/
 ├── ├── ├── __init__.py
 ├── ├── ├── config.yaml
 ├── ├── └── logic.py
-├── └── waveform_shape_response_in_plasma/
+├── ├── waveform_shape_response_in_plasma/
+├── ├── ├── __init__.py
+├── ├── ├── config.yaml
+├── ├── └── logic.py
+├── ├── z_electric_oscillation/
+├── ├── ├── __init__.py
+├── ├── ├── logic.py
+├── ├── ├── plasma_sine/
+├── ├── ├── ├── __init__.py
+├── ├── ├── ├── config.yaml
+├── ├── ├── └── logic.py
+├── ├── ├── plasma_square/
+├── ├── ├── ├── __init__.py
+├── ├── ├── ├── config.yaml
+├── ├── ├── └── logic.py
+├── ├── ├── plasma_triangle/
+├── ├── ├── ├── __init__.py
+├── ├── ├── ├── config.yaml
+├── ├── ├── └── logic.py
+├── ├── ├── shared_logic.py
+├── ├── ├── vacuum_sine/
+├── ├── ├── ├── __init__.py
+├── ├── ├── ├── config.yaml
+├── ├── ├── └── logic.py
+├── ├── ├── vacuum_square/
+├── ├── ├── ├── __init__.py
+├── ├── ├── ├── config.yaml
+├── ├── ├── └── logic.py
+├── ├── └── vacuum_triangle/
+├── ├── └── ├── __init__.py
+├── ├── └── ├── config.yaml
+├── ├── └── └── logic.py
+├── └── z_magnetic_oscillation/
 ├── └── ├── __init__.py
-├── └── ├── config.yaml
-├── └── └── logic.py
+├── └── ├── logic.py
+├── └── ├── plasma_sine/
+├── └── ├── ├── __init__.py
+├── └── ├── ├── config.yaml
+├── └── ├── └── logic.py
+├── └── ├── plasma_square/
+├── └── ├── ├── __init__.py
+├── └── ├── ├── config.yaml
+├── └── ├── └── logic.py
+├── └── ├── plasma_triangle/
+├── └── ├── ├── __init__.py
+├── └── ├── ├── config.yaml
+├── └── ├── └── logic.py
+├── └── ├── shared_logic.py
+├── └── ├── vacuum_sine/
+├── └── ├── ├── __init__.py
+├── └── ├── ├── config.yaml
+├── └── ├── └── logic.py
+├── └── ├── vacuum_square/
+├── └── ├── ├── __init__.py
+├── └── ├── ├── config.yaml
+├── └── ├── └── logic.py
+├── └── └── vacuum_triangle/
+├── └── └── ├── __init__.py
+├── └── └── ├── config.yaml
+├── └── └── └── logic.py
 ├── generate_layout.py
 ├── interface/
-├── └── ui,py
 ├── main.py
 ├── output/
 ├── ├── charge_frequency_sweep/
+├── ├── ├── force_matrix.csv
+├── ├── └── force_matrix.png
+├── ├── charge_frequency_sweep_in_plasma/
+├── ├── ├── force_matrix.csv
+├── ├── └── force_matrix.png
+├── ├── electric_oscillation/
+├── ├── ├── vacuum_sine/
+├── ├── ├── ├── force_trace.csv
+├── ├── ├── ├── force_trace.png
+├── ├── ├── ├── orbit.png
+├── ├── ├── ├── signal.png
+├── ├── ├── ├── summary.csv
+├── ├── ├── ├── time_series.csv
+├── ├── ├── └── vector_time_series.csv
+├── ├── ├── vacuum_square/
+├── ├── ├── ├── force_trace.csv
+├── ├── ├── ├── force_trace.png
+├── ├── ├── ├── orbit.png
+├── ├── ├── ├── signal.png
+├── ├── ├── ├── summary.csv
+├── ├── ├── ├── time_series.csv
+├── ├── ├── └── vector_time_series.csv
+├── ├── └── vacuum_triangle/
+├── ├── └── ├── force_trace.csv
+├── ├── └── ├── force_trace.png
+├── ├── └── ├── orbit.png
+├── ├── └── ├── signal.png
+├── ├── └── ├── summary.csv
+├── ├── └── ├── time_series.csv
+├── ├── └── └── vector_time_series.csv
 ├── ├── field_orientation_variance/
-├── ├── └── first_vireon_run_fiel_variance.zip
+├── ├── ├── force_matrix_angle_0deg.csv
+├── ├── ├── force_matrix_angle_0deg.png
+├── ├── ├── force_matrix_angle_15deg.csv
+├── ├── ├── force_matrix_angle_15deg.png
+├── ├── ├── force_matrix_angle_30deg.csv
+├── ├── ├── force_matrix_angle_30deg.png
+├── ├── ├── force_matrix_angle_45deg.csv
+├── ├── ├── force_matrix_angle_45deg.png
+├── ├── ├── force_matrix_angle_60deg.csv
+├── ├── ├── force_matrix_angle_60deg.png
+├── ├── ├── force_matrix_angle_75deg.csv
+├── ├── ├── force_matrix_angle_75deg.png
+├── ├── ├── force_matrix_angle_90deg.csv
+├── ├── ├── force_matrix_angle_90deg.png
+├── ├── └── forces_3d.npz
+├── ├── field_orientation_variance_in_plasma/
+├── ├── ├── force_matrix_angle_0deg.csv
+├── ├── ├── force_matrix_angle_0deg.png
+├── ├── ├── force_matrix_angle_15deg.csv
+├── ├── ├── force_matrix_angle_15deg.png
+├── ├── ├── force_matrix_angle_30deg.csv
+├── ├── ├── force_matrix_angle_30deg.png
+├── ├── ├── force_matrix_angle_45deg.csv
+├── ├── ├── force_matrix_angle_45deg.png
+├── ├── ├── force_matrix_angle_60deg.csv
+├── ├── ├── force_matrix_angle_60deg.png
+├── ├── ├── force_matrix_angle_75deg.csv
+├── ├── ├── force_matrix_angle_75deg.png
+├── ├── ├── force_matrix_angle_90deg.csv
+├── ├── ├── force_matrix_angle_90deg.png
+├── ├── └── forces_3d.npz
+├── ├── interference_field_superposition/
+├── ├── ├── force_map.csv
+├── ├── ├── force_map.png
+├── ├── ├── force_vector_quiver.png
+├── ├── ├── force_vector_x.csv
+├── ├── ├── force_vector_y.csv
+├── ├── ├── gravimeter_signal.csv
+├── ├── ├── phasor_summary.csv
+├── ├── ├── potential_map.csv
+├── ├── └── potential_map.png
+├── ├── interference_field_superposition_in_plasma/
+├── ├── ├── force_map.csv
+├── ├── ├── force_map.png
+├── ├── ├── force_vector_quiver.png
+├── ├── ├── force_vector_x.csv
+├── ├── ├── force_vector_y.csv
+├── ├── ├── phasor_summary.csv
+├── ├── ├── potential_map.csv
+├── ├── ├── potential_map.png
+├── ├── └── vorticity.csv
+├── ├── magnetic_oscillation/
+├── ├── ├── vacuum_sine/
+├── ├── ├── ├── force_trace.csv
+├── ├── ├── ├── force_trace.png
+├── ├── ├── └── summary.csv
+├── ├── ├── vacuum_square/
+├── ├── ├── ├── force_trace.csv
+├── ├── ├── ├── force_trace.png
+├── ├── ├── └── summary.csv
+├── ├── └── vacuum_triangle/
+├── ├── └── ├── force_trace.csv
+├── ├── └── ├── force_trace.png
+├── ├── └── └── summary.csv
 ├── ├── mass_scaling/
-├── ├── └── first_vireon_run.zip
+├── ├── mass_scaling_at_constant_qf/
+├── ├── ├── accel_vs_mass.png
+├── ├── ├── force_vs_mass.png
+├── ├── ├── mass_force_accel.csv
+├── ├── └── results.npz
+├── ├── mass_scaling_at_constant_qf_in_plasma/
+├── ├── ├── accel_vs_mass.png
+├── ├── ├── force_vs_mass.png
+├── ├── ├── mass_force_accel.csv
+├── ├── └── results.npz
 ├── ├── plasma_resonance_collapse/
 ├── ├── ├── collapse_trace.csv
 ├── ├── ├── collapse_trace.png
-├── ├── ├── first_full_vireon_run.zip
-├── ├── ├── first_vireon_plasma.zip
+├── ├── ├── final_polar_sawtooth.png
+├── ├── ├── final_polar_sine.png
+├── ├── ├── final_polar_square.png
+├── ├── ├── final_polar_triangle.png
 ├── ├── ├── modulated/
 ├── ├── ├── ├── collapse_trace.csv
 ├── ├── ├── ├── energy.png
@@ -214,6 +317,14 @@ Vireon/
 ├── ├── ├── ├── positions_t0999.csv
 ├── ├── ├── ├── radius.png
 ├── ├── ├── └── radius_trace.csv
+├── ├── ├── radius_timeseries_sawtooth.png
+├── ├── ├── radius_timeseries_sine.png
+├── ├── ├── radius_timeseries_square.png
+├── ├── ├── radius_timeseries_triangle.png
+├── ├── ├── results_sawtooth.npz
+├── ├── ├── results_sine.npz
+├── ├── ├── results_square.npz
+├── ├── ├── results_triangle.npz
 ├── ├── ├── sine/
 ├── ├── ├── ├── collapse_trace.csv
 ├── ├── ├── ├── energy.png
@@ -268,6 +379,10 @@ Vireon/
 ├── ├── ├── ├── positions_t0999.csv
 ├── ├── ├── ├── radius.png
 ├── ├── ├── └── radius_trace.csv
+├── ├── ├── time_series_sawtooth.csv
+├── ├── ├── time_series_sine.csv
+├── ├── ├── time_series_square.csv
+├── ├── ├── time_series_triangle.csv
 ├── ├── └── triangle/
 ├── ├── └── ├── collapse_trace.csv
 ├── ├── └── ├── energy.png
@@ -296,26 +411,97 @@ Vireon/
 ├── ├── └── ├── radius.png
 ├── ├── └── └── radius_trace.csv
 ├── ├── resonant_particle_field/
-├── ├── ├── first_vireon_run_resonant_field.zip
+├── ├── ├── field_grad_sawtooth.png
+├── ├── ├── field_grad_sine.png
+├── ├── ├── field_grad_square.png
+├── ├── ├── field_grad_triangle.png
+├── ├── ├── field_sawtooth.csv
+├── ├── ├── field_sawtooth.png
+├── ├── ├── field_sine.csv
+├── ├── ├── field_sine.png
+├── ├── ├── field_square.csv
+├── ├── ├── field_square.png
+├── ├── ├── field_triangle.csv
+├── ├── ├── field_triangle.png
+├── ├── ├── potential_sawtooth.csv
+├── ├── ├── potential_sine.csv
+├── ├── ├── potential_square.csv
+├── ├── ├── potential_triangle.csv
 ├── ├── ├── resonance_force_plot.png
-├── ├── └── resonance_force_trace.csv
+├── ├── ├── resonance_force_trace.csv
+├── ├── └── summary.npz
+├── ├── resonant_particle_field_in_plasma/
+├── ├── ├── field_grad_sawtooth.png
+├── ├── ├── field_grad_sine.png
+├── ├── ├── field_grad_square.png
+├── ├── ├── field_grad_triangle.png
+├── ├── ├── field_sawtooth.csv
+├── ├── ├── field_sawtooth.png
+├── ├── ├── field_sine.csv
+├── ├── ├── field_sine.png
+├── ├── ├── field_square.csv
+├── ├── ├── field_square.png
+├── ├── ├── field_triangle.csv
+├── ├── ├── field_triangle.png
+├── ├── ├── potential_sawtooth.csv
+├── ├── ├── potential_sine.csv
+├── ├── ├── potential_square.csv
+├── ├── ├── potential_triangle.csv
+├── ├── └── summary.npz
 ├── ├── toroidal_field_rotation/
-├── ├── ├── first_vireon_run_torodiol_rotation.zip
+├── ├── ├── field_grad_sawtooth.png
+├── ├── ├── field_grad_sine.png
+├── ├── ├── field_grad_square.png
+├── ├── ├── field_grad_triangle.png
+├── ├── ├── field_sawtooth.csv
+├── ├── ├── field_sawtooth.png
+├── ├── ├── field_sine.csv
+├── ├── ├── field_sine.png
+├── ├── ├── field_square.csv
+├── ├── ├── field_square.png
+├── ├── ├── field_triangle.csv
+├── ├── ├── field_triangle.png
 ├── ├── ├── modulated/
 ├── ├── ├── ├── toroidal_force_plot.png
 ├── ├── ├── └── toroidal_force_trace.csv
+├── ├── ├── potential_sawtooth.csv
+├── ├── ├── potential_sine.csv
+├── ├── ├── potential_square.csv
+├── ├── ├── potential_triangle.csv
 ├── ├── ├── sine/
 ├── ├── ├── ├── toroidal_force_plot.png
 ├── ├── ├── └── toroidal_force_trace.csv
 ├── ├── ├── square/
 ├── ├── ├── ├── toroidal_force_plot.png
 ├── ├── ├── └── toroidal_force_trace.csv
+├── ├── ├── summary.npz
 ├── ├── └── triangle/
 ├── ├── └── ├── toroidal_force_plot.png
 ├── ├── └── └── toroidal_force_trace.csv
+├── ├── toroidal_field_rotation_in_plasma/
+├── ├── ├── field_grad_sawtooth.png
+├── ├── ├── field_grad_sine.png
+├── ├── ├── field_grad_square.png
+├── ├── ├── field_grad_triangle.png
+├── ├── ├── field_sawtooth.csv
+├── ├── ├── field_sawtooth.png
+├── ├── ├── field_sine.csv
+├── ├── ├── field_sine.png
+├── ├── ├── field_square.csv
+├── ├── ├── field_square.png
+├── ├── ├── field_triangle.csv
+├── ├── ├── field_triangle.png
+├── ├── ├── potential_sawtooth.csv
+├── ├── ├── potential_sine.csv
+├── ├── ├── potential_square.csv
+├── ├── ├── potential_triangle.csv
+├── ├── └── summary.npz
 ├── ├── vacuum_permittivity_modulation/
-├── ├── ├── first_vireon_run_vaccuum_permittivity.zip
+├── ├── ├── accel_vs_epsilon.png
+├── ├── ├── epsilon_sweep.csv
+├── ├── ├── force_vs_epsilon.png
 ├── ├── ├── modulated/
+├── ├── ├── results.npz
 ├── ├── ├── sine/
 ├── ├── ├── ├── permittivity_force_plot.png
 ├── ├── ├── └── permittivity_force_response.csv
@@ -325,15 +511,71 @@ Vireon/
 ├── ├── └── triangle/
 ├── ├── └── ├── permittivity_force_plot.png
 ├── ├── └── └── permittivity_force_response.csv
-├── └── waveform_shape_response/
-├── └── ├── sine_waveform_plot.png
-├── └── ├── square_waveform_plot.png
-├── └── ├── triangle_waveform_plot.png
-├── └── └── waveform_force_results.csv
+├── ├── vacuum_permittivity_modulation_in_plasma/
+├── ├── ├── accel_vs_epsilon_plasma.png
+├── ├── ├── epsilon_sweep_plasma.csv
+├── ├── ├── force_vs_epsilon_plasma.png
+├── ├── ├── results_plasma.npz
+├── ├── └── sine/
+├── ├── └── ├── plasma_permittivity_force_plot.png
+├── ├── └── └── plasma_permittivity_force_response.csv
+├── ├── waveform_shape_response/
+├── ├── ├── results.npz
+├── ├── ├── sine_waveform_plot.png
+├── ├── ├── square_waveform_plot.png
+├── ├── ├── summary_metrics.csv
+├── ├── ├── time_series_sine.csv
+├── ├── ├── time_series_square.csv
+├── ├── ├── time_series_triangle.csv
+├── ├── ├── triangle_waveform_plot.png
+├── ├── ├── waveform_force_results.csv
+├── ├── └── waveform_overlay.png
+├── ├── waveform_shape_response_in_plasma/
+├── ├── ├── results_plasma.npz
+├── ├── ├── summary_metrics.csv
+├── ├── ├── time_series_sine.csv
+├── ├── ├── time_series_square.csv
+├── ├── ├── time_series_triangle.csv
+├── ├── └── waveform_overlay_plasma.png
+├── ├── z_electric_oscillation/
+├── ├── ├── vacuum_sine/
+├── ├── ├── ├── orbit.png
+├── ├── ├── ├── signal.png
+├── ├── ├── ├── time_series.csv
+├── ├── ├── └── vector_time_series.csv
+├── ├── ├── vacuum_square/
+├── ├── ├── ├── orbit.png
+├── ├── ├── ├── signal.png
+├── ├── ├── ├── time_series.csv
+├── ├── ├── └── vector_time_series.csv
+├── ├── └── vacuum_triangle/
+├── ├── └── ├── orbit.png
+├── ├── └── ├── signal.png
+├── ├── └── ├── time_series.csv
+├── ├── └── └── vector_time_series.csv
+├── └── z_magnetic_oscillation/
+├── └── ├── plasma_triangle/
+├── └── ├── ├── orbit.png
+├── └── ├── ├── signal.png
+├── └── ├── ├── time_series.csv
+├── └── ├── └── vector_time_series.csv
+├── └── ├── vacuum_sine/
+├── └── ├── ├── orbit.png
+├── └── ├── ├── signal.png
+├── └── ├── ├── time_series.csv
+├── └── ├── └── vector_time_series.csv
+├── └── └── vacuum_square/
+├── └── └── ├── orbit.png
+├── └── └── ├── signal.png
+├── └── └── ├── time_series.csv
+├── └── └── └── vector_time_series.csv
 ├── venv/
 ├── ├── Include/
 ├── ├── Lib/
 ├── ├── └── site-packages/
+├── ├── └── ├── _distutils_hack/
+├── ├── └── ├── ├── __init__.py
+├── ├── └── ├── └── override.py
 ├── ├── └── ├── _yaml/
 ├── ├── └── ├── └── __init__.py
 ├── ├── └── ├── contourpy/
@@ -398,6 +640,7 @@ Vireon/
 ├── ├── └── ├── └── ├── __init__.py
 ├── ├── └── ├── └── ├── dateutil-zoneinfo.tar.gz
 ├── ├── └── ├── └── └── rebuild.py
+├── ├── └── ├── distutils-precedence.pth
 ├── ├── └── ├── fontTools/
 ├── ├── └── ├── ├── __init__.py
 ├── ├── └── ├── ├── __main__.py
@@ -4824,6 +5067,34 @@ Vireon/
 ├── ├── └── ├── ├── REQUESTED
 ├── ├── └── ├── ├── top_level.txt
 ├── ├── └── ├── └── WHEEL
+├── ├── └── ├── pkg_resources/
+├── ├── └── ├── ├── __init__.py
+├── ├── └── ├── ├── api_tests.txt
+├── ├── └── ├── ├── py.typed
+├── ├── └── ├── └── tests/
+├── ├── └── ├── └── ├── __init__.py
+├── ├── └── ├── └── ├── data/
+├── ├── └── ├── └── ├── ├── my-test-package-source/
+├── ├── └── ├── └── ├── ├── ├── setup.cfg
+├── ├── └── ├── └── ├── ├── └── setup.py
+├── ├── └── ├── └── ├── ├── my-test-package-zip/
+├── ├── └── ├── └── ├── ├── └── my-test-package.zip
+├── ├── └── ├── └── ├── ├── my-test-package_unpacked-egg/
+├── ├── └── ├── └── ├── ├── └── my_test_package-1.0-py3.7.egg/
+├── ├── └── ├── └── ├── ├── └── └── EGG-INFO/
+├── ├── └── ├── └── ├── ├── └── └── ├── dependency_links.txt
+├── ├── └── ├── └── ├── ├── └── └── ├── PKG-INFO
+├── ├── └── ├── └── ├── ├── └── └── ├── SOURCES.txt
+├── ├── └── ├── └── ├── ├── └── └── ├── top_level.txt
+├── ├── └── ├── └── ├── ├── └── └── └── zip-safe
+├── ├── └── ├── └── ├── └── my-test-package_zipped-egg/
+├── ├── └── ├── └── ├── └── └── my_test_package-1.0-py3.7.egg
+├── ├── └── ├── └── ├── test_find_distributions.py
+├── ├── └── ├── └── ├── test_integration_zope_interface.py
+├── ├── └── ├── └── ├── test_markers.py
+├── ├── └── ├── └── ├── test_pkg_resources.py
+├── ├── └── ├── └── ├── test_resources.py
+├── ├── └── ├── └── └── test_working_set.py
 ├── ├── └── ├── pylab.py
 ├── ├── └── ├── pyparsing/
 ├── ├── └── ├── ├── __init__.py
@@ -5504,6 +5775,564 @@ Vireon/
 ├── ├── └── ├── ├── REQUESTED
 ├── ├── └── ├── ├── top_level.txt
 ├── ├── └── ├── └── WHEEL
+├── ├── └── ├── setuptools/
+├── ├── └── ├── ├── __init__.py
+├── ├── └── ├── ├── _core_metadata.py
+├── ├── └── ├── ├── _discovery.py
+├── ├── └── ├── ├── _distutils/
+├── ├── └── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── _log.py
+├── ├── └── ├── ├── ├── _macos_compat.py
+├── ├── └── ├── ├── ├── _modified.py
+├── ├── └── ├── ├── ├── _msvccompiler.py
+├── ├── └── ├── ├── ├── archive_util.py
+├── ├── └── ├── ├── ├── ccompiler.py
+├── ├── └── ├── ├── ├── cmd.py
+├── ├── └── ├── ├── ├── command/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── _framework_compat.py
+├── ├── └── ├── ├── ├── ├── bdist.py
+├── ├── └── ├── ├── ├── ├── bdist_dumb.py
+├── ├── └── ├── ├── ├── ├── bdist_rpm.py
+├── ├── └── ├── ├── ├── ├── build.py
+├── ├── └── ├── ├── ├── ├── build_clib.py
+├── ├── └── ├── ├── ├── ├── build_ext.py
+├── ├── └── ├── ├── ├── ├── build_py.py
+├── ├── └── ├── ├── ├── ├── build_scripts.py
+├── ├── └── ├── ├── ├── ├── check.py
+├── ├── └── ├── ├── ├── ├── clean.py
+├── ├── └── ├── ├── ├── ├── config.py
+├── ├── └── ├── ├── ├── ├── install.py
+├── ├── └── ├── ├── ├── ├── install_data.py
+├── ├── └── ├── ├── ├── ├── install_egg_info.py
+├── ├── └── ├── ├── ├── ├── install_headers.py
+├── ├── └── ├── ├── ├── ├── install_lib.py
+├── ├── └── ├── ├── ├── ├── install_scripts.py
+├── ├── └── ├── ├── ├── └── sdist.py
+├── ├── └── ├── ├── ├── compat/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── numpy.py
+├── ├── └── ├── ├── ├── └── py39.py
+├── ├── └── ├── ├── ├── compilers/
+├── ├── └── ├── ├── ├── └── C/
+├── ├── └── ├── ├── ├── └── ├── base.py
+├── ├── └── ├── ├── ├── └── ├── cygwin.py
+├── ├── └── ├── ├── ├── └── ├── errors.py
+├── ├── └── ├── ├── ├── └── ├── msvc.py
+├── ├── └── ├── ├── ├── └── ├── tests/
+├── ├── └── ├── ├── ├── └── ├── ├── test_base.py
+├── ├── └── ├── ├── ├── └── ├── ├── test_cygwin.py
+├── ├── └── ├── ├── ├── └── ├── ├── test_mingw.py
+├── ├── └── ├── ├── ├── └── ├── ├── test_msvc.py
+├── ├── └── ├── ├── ├── └── ├── └── test_unix.py
+├── ├── └── ├── ├── ├── └── ├── unix.py
+├── ├── └── ├── ├── ├── └── └── zos.py
+├── ├── └── ├── ├── ├── core.py
+├── ├── └── ├── ├── ├── cygwinccompiler.py
+├── ├── └── ├── ├── ├── debug.py
+├── ├── └── ├── ├── ├── dep_util.py
+├── ├── └── ├── ├── ├── dir_util.py
+├── ├── └── ├── ├── ├── dist.py
+├── ├── └── ├── ├── ├── errors.py
+├── ├── └── ├── ├── ├── extension.py
+├── ├── └── ├── ├── ├── fancy_getopt.py
+├── ├── └── ├── ├── ├── file_util.py
+├── ├── └── ├── ├── ├── filelist.py
+├── ├── └── ├── ├── ├── log.py
+├── ├── └── ├── ├── ├── spawn.py
+├── ├── └── ├── ├── ├── sysconfig.py
+├── ├── └── ├── ├── ├── tests/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── compat/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── └── py39.py
+├── ├── └── ├── ├── ├── ├── support.py
+├── ├── └── ├── ├── ├── ├── test_archive_util.py
+├── ├── └── ├── ├── ├── ├── test_bdist.py
+├── ├── └── ├── ├── ├── ├── test_bdist_dumb.py
+├── ├── └── ├── ├── ├── ├── test_bdist_rpm.py
+├── ├── └── ├── ├── ├── ├── test_build.py
+├── ├── └── ├── ├── ├── ├── test_build_clib.py
+├── ├── └── ├── ├── ├── ├── test_build_ext.py
+├── ├── └── ├── ├── ├── ├── test_build_py.py
+├── ├── └── ├── ├── ├── ├── test_build_scripts.py
+├── ├── └── ├── ├── ├── ├── test_check.py
+├── ├── └── ├── ├── ├── ├── test_clean.py
+├── ├── └── ├── ├── ├── ├── test_cmd.py
+├── ├── └── ├── ├── ├── ├── test_config_cmd.py
+├── ├── └── ├── ├── ├── ├── test_core.py
+├── ├── └── ├── ├── ├── ├── test_dir_util.py
+├── ├── └── ├── ├── ├── ├── test_dist.py
+├── ├── └── ├── ├── ├── ├── test_extension.py
+├── ├── └── ├── ├── ├── ├── test_file_util.py
+├── ├── └── ├── ├── ├── ├── test_filelist.py
+├── ├── └── ├── ├── ├── ├── test_install.py
+├── ├── └── ├── ├── ├── ├── test_install_data.py
+├── ├── └── ├── ├── ├── ├── test_install_headers.py
+├── ├── └── ├── ├── ├── ├── test_install_lib.py
+├── ├── └── ├── ├── ├── ├── test_install_scripts.py
+├── ├── └── ├── ├── ├── ├── test_log.py
+├── ├── └── ├── ├── ├── ├── test_modified.py
+├── ├── └── ├── ├── ├── ├── test_sdist.py
+├── ├── └── ├── ├── ├── ├── test_spawn.py
+├── ├── └── ├── ├── ├── ├── test_sysconfig.py
+├── ├── └── ├── ├── ├── ├── test_text_file.py
+├── ├── └── ├── ├── ├── ├── test_util.py
+├── ├── └── ├── ├── ├── ├── test_version.py
+├── ├── └── ├── ├── ├── ├── test_versionpredicate.py
+├── ├── └── ├── ├── ├── └── unix_compat.py
+├── ├── └── ├── ├── ├── text_file.py
+├── ├── └── ├── ├── ├── unixccompiler.py
+├── ├── └── ├── ├── ├── util.py
+├── ├── └── ├── ├── ├── version.py
+├── ├── └── ├── ├── ├── versionpredicate.py
+├── ├── └── ├── ├── └── zosccompiler.py
+├── ├── └── ├── ├── _entry_points.py
+├── ├── └── ├── ├── _imp.py
+├── ├── └── ├── ├── _importlib.py
+├── ├── └── ├── ├── _itertools.py
+├── ├── └── ├── ├── _normalization.py
+├── ├── └── ├── ├── _path.py
+├── ├── └── ├── ├── _reqs.py
+├── ├── └── ├── ├── _scripts.py
+├── ├── └── ├── ├── _shutil.py
+├── ├── └── ├── ├── _static.py
+├── ├── └── ├── ├── _vendor/
+├── ├── └── ├── ├── ├── autocommand/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── autoasync.py
+├── ├── └── ├── ├── ├── ├── autocommand.py
+├── ├── └── ├── ├── ├── ├── automain.py
+├── ├── └── ├── ├── ├── ├── autoparse.py
+├── ├── └── ├── ├── ├── └── errors.py
+├── ├── └── ├── ├── ├── autocommand-2.2.2.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── backports/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── └── tarfile/
+├── ├── └── ├── ├── ├── └── ├── __init__.py
+├── ├── └── ├── ├── ├── └── ├── __main__.py
+├── ├── └── ├── ├── ├── └── └── compat/
+├── ├── └── ├── ├── ├── └── └── ├── __init__.py
+├── ├── └── ├── ├── ├── └── └── └── py38.py
+├── ├── └── ├── ├── ├── backports.tarfile-1.2.0.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── importlib_metadata/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── _adapters.py
+├── ├── └── ├── ├── ├── ├── _collections.py
+├── ├── └── ├── ├── ├── ├── _compat.py
+├── ├── └── ├── ├── ├── ├── _functools.py
+├── ├── └── ├── ├── ├── ├── _itertools.py
+├── ├── └── ├── ├── ├── ├── _meta.py
+├── ├── └── ├── ├── ├── ├── _text.py
+├── ├── └── ├── ├── ├── ├── compat/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── ├── py311.py
+├── ├── └── ├── ├── ├── ├── └── py39.py
+├── ├── └── ├── ├── ├── ├── diagnose.py
+├── ├── └── ├── ├── ├── └── py.typed
+├── ├── └── ├── ├── ├── importlib_metadata-8.0.0.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── inflect/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── compat/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── └── py38.py
+├── ├── └── ├── ├── ├── └── py.typed
+├── ├── └── ├── ├── ├── inflect-7.3.1.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── jaraco/
+├── ├── └── ├── ├── ├── ├── collections/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── └── py.typed
+├── ├── └── ├── ├── ├── ├── context.py
+├── ├── └── ├── ├── ├── ├── functools/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── ├── __init__.pyi
+├── ├── └── ├── ├── ├── ├── └── py.typed
+├── ├── └── ├── ├── ├── └── text/
+├── ├── └── ├── ├── ├── └── ├── __init__.py
+├── ├── └── ├── ├── ├── └── ├── layouts.py
+├── ├── └── ├── ├── ├── └── ├── Lorem ipsum.txt
+├── ├── └── ├── ├── ├── └── ├── show-newlines.py
+├── ├── └── ├── ├── ├── └── ├── strip-prefix.py
+├── ├── └── ├── ├── ├── └── ├── to-dvorak.py
+├── ├── └── ├── ├── ├── └── └── to-qwerty.py
+├── ├── └── ├── ├── ├── jaraco.collections-5.1.0.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── jaraco.context-5.3.0.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── jaraco.functools-4.0.1.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── jaraco.text-3.12.1.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── more_itertools/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── __init__.pyi
+├── ├── └── ├── ├── ├── ├── more.py
+├── ├── └── ├── ├── ├── ├── more.pyi
+├── ├── └── ├── ├── ├── ├── py.typed
+├── ├── └── ├── ├── ├── ├── recipes.py
+├── ├── └── ├── ├── ├── └── recipes.pyi
+├── ├── └── ├── ├── ├── more_itertools-10.3.0.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── packaging/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── _elffile.py
+├── ├── └── ├── ├── ├── ├── _manylinux.py
+├── ├── └── ├── ├── ├── ├── _musllinux.py
+├── ├── └── ├── ├── ├── ├── _parser.py
+├── ├── └── ├── ├── ├── ├── _structures.py
+├── ├── └── ├── ├── ├── ├── _tokenizer.py
+├── ├── └── ├── ├── ├── ├── licenses/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── └── _spdx.py
+├── ├── └── ├── ├── ├── ├── markers.py
+├── ├── └── ├── ├── ├── ├── metadata.py
+├── ├── └── ├── ├── ├── ├── py.typed
+├── ├── └── ├── ├── ├── ├── requirements.py
+├── ├── └── ├── ├── ├── ├── specifiers.py
+├── ├── └── ├── ├── ├── ├── tags.py
+├── ├── └── ├── ├── ├── ├── utils.py
+├── ├── └── ├── ├── ├── └── version.py
+├── ├── └── ├── ├── ├── packaging-24.2.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── LICENSE.APACHE
+├── ├── └── ├── ├── ├── ├── LICENSE.BSD
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── platformdirs/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── __main__.py
+├── ├── └── ├── ├── ├── ├── android.py
+├── ├── └── ├── ├── ├── ├── api.py
+├── ├── └── ├── ├── ├── ├── macos.py
+├── ├── └── ├── ├── ├── ├── py.typed
+├── ├── └── ├── ├── ├── ├── unix.py
+├── ├── └── ├── ├── ├── ├── version.py
+├── ├── └── ├── ├── ├── └── windows.py
+├── ├── └── ├── ├── ├── platformdirs-4.2.2.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── licenses/
+├── ├── └── ├── ├── ├── ├── └── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── tomli/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── _parser.py
+├── ├── └── ├── ├── ├── ├── _re.py
+├── ├── └── ├── ├── ├── ├── _types.py
+├── ├── └── ├── ├── ├── └── py.typed
+├── ├── └── ├── ├── ├── tomli-2.0.1.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── typeguard/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── _checkers.py
+├── ├── └── ├── ├── ├── ├── _config.py
+├── ├── └── ├── ├── ├── ├── _decorators.py
+├── ├── └── ├── ├── ├── ├── _exceptions.py
+├── ├── └── ├── ├── ├── ├── _functions.py
+├── ├── └── ├── ├── ├── ├── _importhook.py
+├── ├── └── ├── ├── ├── ├── _memo.py
+├── ├── └── ├── ├── ├── ├── _pytest_plugin.py
+├── ├── └── ├── ├── ├── ├── _suppression.py
+├── ├── └── ├── ├── ├── ├── _transformer.py
+├── ├── └── ├── ├── ├── ├── _union_transformer.py
+├── ├── └── ├── ├── ├── ├── _utils.py
+├── ├── └── ├── ├── ├── └── py.typed
+├── ├── └── ├── ├── ├── typeguard-4.3.0.dist-info/
+├── ├── └── ├── ├── ├── ├── entry_points.txt
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── top_level.txt
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── typing_extensions-4.12.2.dist-info/
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── typing_extensions.py
+├── ├── └── ├── ├── ├── wheel/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── __main__.py
+├── ├── └── ├── ├── ├── ├── _bdist_wheel.py
+├── ├── └── ├── ├── ├── ├── _setuptools_logging.py
+├── ├── └── ├── ├── ├── ├── bdist_wheel.py
+├── ├── └── ├── ├── ├── ├── cli/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── ├── convert.py
+├── ├── └── ├── ├── ├── ├── ├── pack.py
+├── ├── └── ├── ├── ├── ├── ├── tags.py
+├── ├── └── ├── ├── ├── ├── └── unpack.py
+├── ├── └── ├── ├── ├── ├── macosx_libfile.py
+├── ├── └── ├── ├── ├── ├── metadata.py
+├── ├── └── ├── ├── ├── ├── util.py
+├── ├── └── ├── ├── ├── ├── vendored/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── ├── packaging/
+├── ├── └── ├── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── ├── ├── _elffile.py
+├── ├── └── ├── ├── ├── ├── ├── ├── _manylinux.py
+├── ├── └── ├── ├── ├── ├── ├── ├── _musllinux.py
+├── ├── └── ├── ├── ├── ├── ├── ├── _parser.py
+├── ├── └── ├── ├── ├── ├── ├── ├── _structures.py
+├── ├── └── ├── ├── ├── ├── ├── ├── _tokenizer.py
+├── ├── └── ├── ├── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── ├── ├── LICENSE.APACHE
+├── ├── └── ├── ├── ├── ├── ├── ├── LICENSE.BSD
+├── ├── └── ├── ├── ├── ├── ├── ├── markers.py
+├── ├── └── ├── ├── ├── ├── ├── ├── requirements.py
+├── ├── └── ├── ├── ├── ├── ├── ├── specifiers.py
+├── ├── └── ├── ├── ├── ├── ├── ├── tags.py
+├── ├── └── ├── ├── ├── ├── ├── ├── utils.py
+├── ├── └── ├── ├── ├── ├── ├── └── version.py
+├── ├── └── ├── ├── ├── ├── └── vendor.txt
+├── ├── └── ├── ├── ├── └── wheelfile.py
+├── ├── └── ├── ├── ├── wheel-0.45.1.dist-info/
+├── ├── └── ├── ├── ├── ├── entry_points.txt
+├── ├── └── ├── ├── ├── ├── INSTALLER
+├── ├── └── ├── ├── ├── ├── LICENSE.txt
+├── ├── └── ├── ├── ├── ├── METADATA
+├── ├── └── ├── ├── ├── ├── RECORD
+├── ├── └── ├── ├── ├── ├── REQUESTED
+├── ├── └── ├── ├── ├── └── WHEEL
+├── ├── └── ├── ├── ├── zipp/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── compat/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── └── py310.py
+├── ├── └── ├── ├── ├── └── glob.py
+├── ├── └── ├── ├── └── zipp-3.19.2.dist-info/
+├── ├── └── ├── ├── └── ├── INSTALLER
+├── ├── └── ├── ├── └── ├── LICENSE
+├── ├── └── ├── ├── └── ├── METADATA
+├── ├── └── ├── ├── └── ├── RECORD
+├── ├── └── ├── ├── └── ├── REQUESTED
+├── ├── └── ├── ├── └── ├── top_level.txt
+├── ├── └── ├── ├── └── └── WHEEL
+├── ├── └── ├── ├── archive_util.py
+├── ├── └── ├── ├── build_meta.py
+├── ├── └── ├── ├── cli-32.exe
+├── ├── └── ├── ├── cli-64.exe
+├── ├── └── ├── ├── cli-arm64.exe
+├── ├── └── ├── ├── cli.exe
+├── ├── └── ├── ├── command/
+├── ├── └── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── _requirestxt.py
+├── ├── └── ├── ├── ├── alias.py
+├── ├── └── ├── ├── ├── bdist_egg.py
+├── ├── └── ├── ├── ├── bdist_rpm.py
+├── ├── └── ├── ├── ├── bdist_wheel.py
+├── ├── └── ├── ├── ├── build.py
+├── ├── └── ├── ├── ├── build_clib.py
+├── ├── └── ├── ├── ├── build_ext.py
+├── ├── └── ├── ├── ├── build_py.py
+├── ├── └── ├── ├── ├── develop.py
+├── ├── └── ├── ├── ├── dist_info.py
+├── ├── └── ├── ├── ├── easy_install.py
+├── ├── └── ├── ├── ├── editable_wheel.py
+├── ├── └── ├── ├── ├── egg_info.py
+├── ├── └── ├── ├── ├── install.py
+├── ├── └── ├── ├── ├── install_egg_info.py
+├── ├── └── ├── ├── ├── install_lib.py
+├── ├── └── ├── ├── ├── install_scripts.py
+├── ├── └── ├── ├── ├── launcher manifest.xml
+├── ├── └── ├── ├── ├── rotate.py
+├── ├── └── ├── ├── ├── saveopts.py
+├── ├── └── ├── ├── ├── sdist.py
+├── ├── └── ├── ├── ├── setopt.py
+├── ├── └── ├── ├── └── test.py
+├── ├── └── ├── ├── compat/
+├── ├── └── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── py310.py
+├── ├── └── ├── ├── ├── py311.py
+├── ├── └── ├── ├── ├── py312.py
+├── ├── └── ├── ├── └── py39.py
+├── ├── └── ├── ├── config/
+├── ├── └── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── _apply_pyprojecttoml.py
+├── ├── └── ├── ├── ├── _validate_pyproject/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── error_reporting.py
+├── ├── └── ├── ├── ├── ├── extra_validations.py
+├── ├── └── ├── ├── ├── ├── fastjsonschema_exceptions.py
+├── ├── └── ├── ├── ├── ├── fastjsonschema_validations.py
+├── ├── └── ├── ├── ├── ├── formats.py
+├── ├── └── ├── ├── ├── └── NOTICE
+├── ├── └── ├── ├── ├── distutils.schema.json
+├── ├── └── ├── ├── ├── expand.py
+├── ├── └── ├── ├── ├── NOTICE
+├── ├── └── ├── ├── ├── pyprojecttoml.py
+├── ├── └── ├── ├── ├── setupcfg.py
+├── ├── └── ├── ├── └── setuptools.schema.json
+├── ├── └── ├── ├── depends.py
+├── ├── └── ├── ├── discovery.py
+├── ├── └── ├── ├── dist.py
+├── ├── └── ├── ├── errors.py
+├── ├── └── ├── ├── extension.py
+├── ├── └── ├── ├── glob.py
+├── ├── └── ├── ├── gui-32.exe
+├── ├── └── ├── ├── gui-64.exe
+├── ├── └── ├── ├── gui-arm64.exe
+├── ├── └── ├── ├── gui.exe
+├── ├── └── ├── ├── installer.py
+├── ├── └── ├── ├── launch.py
+├── ├── └── ├── ├── logging.py
+├── ├── └── ├── ├── modified.py
+├── ├── └── ├── ├── monkey.py
+├── ├── └── ├── ├── msvc.py
+├── ├── └── ├── ├── namespaces.py
+├── ├── └── ├── ├── script (dev).tmpl
+├── ├── └── ├── ├── script.tmpl
+├── ├── └── ├── ├── tests/
+├── ├── └── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── compat/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── └── py39.py
+├── ├── └── ├── ├── ├── config/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── downloads/
+├── ├── └── ├── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── └── preload.py
+├── ├── └── ├── ├── ├── ├── setupcfg_examples.txt
+├── ├── └── ├── ├── ├── ├── test_apply_pyprojecttoml.py
+├── ├── └── ├── ├── ├── ├── test_expand.py
+├── ├── └── ├── ├── ├── ├── test_pyprojecttoml.py
+├── ├── └── ├── ├── ├── ├── test_pyprojecttoml_dynamic_deps.py
+├── ├── └── ├── ├── ├── └── test_setupcfg.py
+├── ├── └── ├── ├── ├── contexts.py
+├── ├── └── ├── ├── ├── environment.py
+├── ├── └── ├── ├── ├── fixtures.py
+├── ├── └── ├── ├── ├── indexes/
+├── ├── └── ├── ├── ├── └── test_links_priority/
+├── ├── └── ├── ├── ├── └── ├── external.html
+├── ├── └── ├── ├── ├── └── └── simple/
+├── ├── └── ├── ├── ├── └── └── └── foobar/
+├── ├── └── ├── ├── ├── └── └── └── └── index.html
+├── ├── └── ├── ├── ├── integration/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── helpers.py
+├── ├── └── ├── ├── ├── ├── test_pbr.py
+├── ├── └── ├── ├── ├── └── test_pip_install_sdist.py
+├── ├── └── ├── ├── ├── mod_with_constant.py
+├── ├── └── ├── ├── ├── namespaces.py
+├── ├── └── ├── ├── ├── script-with-bom.py
+├── ├── └── ├── ├── ├── test_archive_util.py
+├── ├── └── ├── ├── ├── test_bdist_deprecations.py
+├── ├── └── ├── ├── ├── test_bdist_egg.py
+├── ├── └── ├── ├── ├── test_bdist_wheel.py
+├── ├── └── ├── ├── ├── test_build.py
+├── ├── └── ├── ├── ├── test_build_clib.py
+├── ├── └── ├── ├── ├── test_build_ext.py
+├── ├── └── ├── ├── ├── test_build_meta.py
+├── ├── └── ├── ├── ├── test_build_py.py
+├── ├── └── ├── ├── ├── test_config_discovery.py
+├── ├── └── ├── ├── ├── test_core_metadata.py
+├── ├── └── ├── ├── ├── test_depends.py
+├── ├── └── ├── ├── ├── test_develop.py
+├── ├── └── ├── ├── ├── test_dist.py
+├── ├── └── ├── ├── ├── test_dist_info.py
+├── ├── └── ├── ├── ├── test_distutils_adoption.py
+├── ├── └── ├── ├── ├── test_editable_install.py
+├── ├── └── ├── ├── ├── test_egg_info.py
+├── ├── └── ├── ├── ├── test_extern.py
+├── ├── └── ├── ├── ├── test_find_packages.py
+├── ├── └── ├── ├── ├── test_find_py_modules.py
+├── ├── └── ├── ├── ├── test_glob.py
+├── ├── └── ├── ├── ├── test_install_scripts.py
+├── ├── └── ├── ├── ├── test_logging.py
+├── ├── └── ├── ├── ├── test_manifest.py
+├── ├── └── ├── ├── ├── test_namespaces.py
+├── ├── └── ├── ├── ├── test_scripts.py
+├── ├── └── ├── ├── ├── test_sdist.py
+├── ├── └── ├── ├── ├── test_setopt.py
+├── ├── └── ├── ├── ├── test_setuptools.py
+├── ├── └── ├── ├── ├── test_shutil_wrapper.py
+├── ├── └── ├── ├── ├── test_unicode_utils.py
+├── ├── └── ├── ├── ├── test_virtualenv.py
+├── ├── └── ├── ├── ├── test_warnings.py
+├── ├── └── ├── ├── ├── test_wheel.py
+├── ├── └── ├── ├── ├── test_windows_wrappers.py
+├── ├── └── ├── ├── ├── text.py
+├── ├── └── ├── ├── └── textwrap.py
+├── ├── └── ├── ├── unicode_utils.py
+├── ├── └── ├── ├── version.py
+├── ├── └── ├── ├── warnings.py
+├── ├── └── ├── ├── wheel.py
+├── ├── └── ├── └── windows_support.py
+├── ├── └── ├── setuptools-80.9.0.dist-info/
+├── ├── └── ├── ├── entry_points.txt
+├── ├── └── ├── ├── INSTALLER
+├── ├── └── ├── ├── licenses/
+├── ├── └── ├── ├── └── LICENSE
+├── ├── └── ├── ├── METADATA
+├── ├── └── ├── ├── RECORD
+├── ├── └── ├── ├── REQUESTED
+├── ├── └── ├── ├── top_level.txt
+├── ├── └── ├── └── WHEEL
 ├── ├── └── ├── six-1.17.0.dist-info/
 ├── ├── └── ├── ├── INSTALLER
 ├── ├── └── ├── ├── LICENSE
@@ -6171,6 +7000,50 @@ Vireon/
 ├── ├── └── ├── ├── RECORD
 ├── ├── └── ├── ├── top_level.txt
 ├── ├── └── ├── └── WHEEL
+├── ├── └── ├── wheel/
+├── ├── └── ├── ├── __init__.py
+├── ├── └── ├── ├── __main__.py
+├── ├── └── ├── ├── _bdist_wheel.py
+├── ├── └── ├── ├── _setuptools_logging.py
+├── ├── └── ├── ├── bdist_wheel.py
+├── ├── └── ├── ├── cli/
+├── ├── └── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── convert.py
+├── ├── └── ├── ├── ├── pack.py
+├── ├── └── ├── ├── ├── tags.py
+├── ├── └── ├── ├── └── unpack.py
+├── ├── └── ├── ├── macosx_libfile.py
+├── ├── └── ├── ├── metadata.py
+├── ├── └── ├── ├── util.py
+├── ├── └── ├── ├── vendored/
+├── ├── └── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── packaging/
+├── ├── └── ├── ├── ├── ├── __init__.py
+├── ├── └── ├── ├── ├── ├── _elffile.py
+├── ├── └── ├── ├── ├── ├── _manylinux.py
+├── ├── └── ├── ├── ├── ├── _musllinux.py
+├── ├── └── ├── ├── ├── ├── _parser.py
+├── ├── └── ├── ├── ├── ├── _structures.py
+├── ├── └── ├── ├── ├── ├── _tokenizer.py
+├── ├── └── ├── ├── ├── ├── LICENSE
+├── ├── └── ├── ├── ├── ├── LICENSE.APACHE
+├── ├── └── ├── ├── ├── ├── LICENSE.BSD
+├── ├── └── ├── ├── ├── ├── markers.py
+├── ├── └── ├── ├── ├── ├── requirements.py
+├── ├── └── ├── ├── ├── ├── specifiers.py
+├── ├── └── ├── ├── ├── ├── tags.py
+├── ├── └── ├── ├── ├── ├── utils.py
+├── ├── └── ├── ├── ├── └── version.py
+├── ├── └── ├── ├── └── vendor.txt
+├── ├── └── ├── └── wheelfile.py
+├── ├── └── ├── wheel-0.45.1.dist-info/
+├── ├── └── ├── ├── entry_points.txt
+├── ├── └── ├── ├── INSTALLER
+├── ├── └── ├── ├── LICENSE.txt
+├── ├── └── ├── ├── METADATA
+├── ├── └── ├── ├── RECORD
+├── ├── └── ├── ├── REQUESTED
+├── ├── └── ├── └── WHEEL
 ├── ├── └── └── yaml/
 ├── ├── └── └── ├── __init__.py
 ├── ├── └── └── ├── _yaml.cp312-win_amd64.pyd
@@ -6206,7 +7079,8 @@ Vireon/
 ├── ├── ├── pyftsubset.exe
 ├── ├── ├── python.exe
 ├── ├── ├── pythonw.exe
-├── ├── └── ttx.exe
+├── ├── ├── ttx.exe
+├── ├── └── wheel.exe
 ├── └── share/
 ├── └── └── man/
 ├── └── └── └── man1/

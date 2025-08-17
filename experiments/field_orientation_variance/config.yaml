@@ -1,19 +1,16 @@
-medium:
-  type: vacuum
-  dt: 1.0e-4
+# Core sweep params (lists can be edited at runtime via prompts)
+charges: [1e-6, 2e-6, 5e-6]
+frequencies: [1e3, 1e4, 1e5]
 
-# Space grid (pick one style and use it in both configs + logic)
-grid_size: 4                  # scalar edge length
-# grid_size: [4.0, 4.0, 4.0]  # or vector form if your logic expects 3D
-
-frequency: 1.0e6             # Hz (single drive)
-charge: 1.0e-9               # C
-mass: 1.0e-6                 # kg
-mode: random                 # orientation selection mode
+# Scalars
+mass: 1.0
 default_k: 1.0
-
-# Optional run control
 duration_s: 1.0
-sampling_rate: 10000
+sampling_rate: 20000
 
-output_dir: "output/field_orientation_variance"
+# Experiment-specific knobs (safe defaults; extra keys are ignored if unused)
+orientation_angles_deg: [0, 15, 30, 45, 60, 75, 90]
+field_strength: 1.0
+
+# Use a relative path to avoid Windows ':' quoting problems
+output_dir: output/field_orientation_variance
