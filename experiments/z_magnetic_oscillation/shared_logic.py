@@ -152,7 +152,7 @@ def _has_key(c: dict, k: str) -> bool:
     return True
 
 
-def run_oscillation(cfg=None, medium: Medium | None = None, *args, **kwargs):
+def run_magnetic(cfg=None, medium: Medium | None = None, *args, **kwargs):
     cfg, medium = normalize_args(cfg, medium, list(args))
     if medium is None:
         raise ValueError("medium is required")
